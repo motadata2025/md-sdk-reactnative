@@ -5,7 +5,7 @@ import { getGlobalInstance } from '../utils/singletonUtils';
  * This product includes software developed at Datadog (https://www.datadoghq.com/).
  * Copyright 2016-Present Datadog, Inc.
  */
-const SESSION_INFO_MODULE = 'com.datadog.reactnative.sdk.session_info';
+const SESSION_INFO_MODULE = 'com.motadata.reactnative.sdk.session_info';
 
 class _SessionInfo {
     sessionId: string | undefined = undefined;

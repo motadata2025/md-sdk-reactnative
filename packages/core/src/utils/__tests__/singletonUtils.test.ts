@@ -14,7 +14,7 @@ describe('singletonUtils', () => {
     });
 
     it('only creates one instance for the same key', () => {
-        const key = 'com.datadog.reactnative.test';
+        const key = 'com.motadata.reactnative.test';
         const symbol = Symbol.for(key);
         createdSymbols.push(symbol);
 
@@ -28,7 +28,7 @@ describe('singletonUtils', () => {
     });
 
     it('returns a pre-existing instance without creating a new one for the same key', () => {
-        const key = 'com.datadog.reactnative.test';
+        const key = 'com.motadata.reactnative.test';
         const symbol = Symbol.for(key);
         createdSymbols.push(symbol);
 
@@ -43,8 +43,8 @@ describe('singletonUtils', () => {
     });
 
     it('creates a new instance for a different key', () => {
-        const keyA = 'com.datadog.reactnative.test.a';
-        const keyB = 'com.datadog.reactnative.test.b';
+        const keyA = 'com.motadata.reactnative.test.a';
+        const keyB = 'com.motadata.reactnative.test.b';
         const symbolA = Symbol.for(keyA);
         const symbolB = Symbol.for(keyB);
         createdSymbols.push(symbolA, symbolB);
@@ -58,7 +58,7 @@ describe('singletonUtils', () => {
     });
 
     it('does not overwrite existing instance if called with a different constructor', () => {
-        const key = 'com.datadog.reactnative.test';
+        const key = 'com.motadata.reactnative.test';
         const symbol = Symbol.for(key);
         createdSymbols.push(symbol);
 

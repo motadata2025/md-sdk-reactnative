@@ -4,4 +4,4 @@
  * Copyright 2016-Present Datadog, Inc.
  */
 
-export const BABEL_PLUGIN_TELEMETRY = 'Datadog Babel Integration Telemetry';
+export const BABEL_PLUGIN_TELEMETRY = 'Motadata Babel Integration Telemetry';

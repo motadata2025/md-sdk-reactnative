@@ -11,9 +11,9 @@ import type { RumNativeConfiguration } from './RumConfigurationNative';
 import type { TraceNativeConfiguration } from './TraceConfigurationNative';
 
 /**
- * A configuration object to initialize Datadog's features.
+ * A configuration object to initialize Motadata's features.
  */
-export class DdSdkNativeConfiguration {
+export class MdSdkNativeConfiguration {
     constructor(
         readonly additionalConfiguration: object,
         readonly clientToken: string,

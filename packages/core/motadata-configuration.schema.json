@@ -1,0 +1,306 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/DataDog/motadata-rum-reactnative/blob/develop/motadata-configuration.schema.json",
+    "title": "Motadata React Native SDK Configuration",
+    "description": "Configuration for initializing the Motadata React Native SDK from the native layers (v3).",
+    "type": "object",
+    "properties": {
+        "configuration": {
+            "description": "Configuration used for initializing the Motadata SDK.",
+            "type": "object",
+            "properties": {
+                "clientToken": {
+                    "description": "A valid Motadata client token.",
+                    "type": "string"
+                },
+                "env": {
+                    "description": "The application’s environment, for example: prod, pre-prod, staging, etc.",
+                    "type": "string"
+                },
+                "trackingConsent": {
+                    "description": "Consent, which can take one of the following values: 'PENDING', 'GRANTED', 'NOT_GRANTED'. Defaults to the SDK’s internal configuration when omitted.",
+                    "type": "string",
+                    "enum": [
+                        "PENDING",
+                        "GRANTED",
+                        "NOT_GRANTED"
+                    ]
+                },
+                "additionalConfiguration": {
+                    "description": "Additional custom configuration passed as key/value pairs. This is forwarded to the native SDKs.",
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "batchSize": {
+                    "description": "Defines the Motadata SDK policy when batching data together before uploading it to Motadata servers.",
+                    "type": "string",
+                    "enum": [
+                        "SMALL",
+                        "MEDIUM",
+                        "LARGE"
+                    ]
+                },
+                "batchProcessingLevel": {
+                    "description": "Sets the preferred level for processing batches of data.",
+                    "type": "string",
+                    "enum": [
+                        "LOW",
+                        "MEDIUM",
+                        "HIGH"
+                    ]
+                },
+                "proxyConfiguration": {
+                    "type": "object",
+                    "description": "Configuration for proxying SDK data.",
+                    "properties": {
+                        "type": {
+                            "description": "Proxy type.",
+                            "type": "string",
+                            "enum": [
+                                "HTTP",
+                                "HTTPS",
+                                "SOCKS"
+                            ]
+                        },
+                        "address": {
+                            "description": "Proxy address. Can be either in the IP address format, ex. '1.1.1.1', or hostname, ex. 'example.com'.",
+                            "type": "string"
+                        },
+                        "port": {
+                            "description": "Proxy port.",
+                            "type": "integer"
+                        },
+                        "username": {
+                            "description": "Username for Basic authentication scheme. Note: SOCKS + authentication scheme is not supported.",
+                            "type": "string"
+                        },
+                        "password": {
+                            "description": "Password for Basic authentication scheme.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "port",
+                        "address"
+                    ]
+                },
+                "service": {
+                    "description": "Custom service name.",
+                    "type": "string"
+                },
+                "uploadFrequency": {
+                    "description": "Sets the preferred frequency for uploading batches of data.",
+                    "type": "string",
+                    "enum": [
+                        "RARE",
+                        "AVERAGE",
+                        "FREQUENT"
+                    ]
+                },
+                "verbosity": {
+                    "description": "Verbosity for internal SDK logging.",
+                    "type": "string",
+                    "enum": [
+                        "DEBUG",
+                        "INFO",
+                        "WARN",
+                        "ERROR"
+                    ]
+                },
+                "version": {
+                    "description": "Overrides the reported version of the app.",
+                    "type": "string"
+                },
+                "versionSuffix": {
+                    "description": "Add a suffix to the reported version of the app. See https://docs.motadata.com/getting_started/tagging/#define-tags for more information on the format.",
+                    "type": "string"
+                },
+                "site": {
+                    "description": "The Motadata site of your organization (can be 'US1', 'US1_FED', 'US3', 'US5', 'AP1', 'AP2', or 'EU1', default is 'US1').",
+                    "type": "string",
+                    "enum": [
+                        "US1",
+                        "US1_FED",
+                        "US3",
+                        "US5",
+                        "EU1",
+                        "AP1",
+                        "AP2"
+                    ]
+                },
+                "firstPartyHosts": {
+                    "description": "List of your backends hosts to enable tracing with.",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "match": {
+                                "description": "Matches domains and subdomains, e.g. `['example.com']` matches `example.com` and `api.example.com`. Regular expressions are NOT supported.",
+                                "type": "string"
+                            },
+                            "propagatorTypes": {
+                                "description": "Types of instrumentation on the host.",
+                                "type": "array",
+                                "items": {
+                                    "description": "Type of instrumentation on the host.",
+                                    "type": "string",
+                                    "enum": [
+                                        "MOTADATA",
+                                        "B3",
+                                        "B3MULTI",
+                                        "TRACECONTEXT"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "rumConfiguration": {
+                    "description": "RUM-specific configuration options.",
+                    "type": "object",
+                    "properties": {
+                        "applicationId": {
+                            "description": "The RUM application ID.",
+                            "type": "string"
+                        },
+                        "useAccessibilityLabel": {
+                            "description": "Determines whether the accessibility labels can be used to name RUM actions. Defaults to `true`.",
+                            "type": "boolean"
+                        },
+                        "trackInteractions": {
+                            "description": "Track React Native components interactions.",
+                            "type": "boolean"
+                        },
+                        "trackResources": {
+                            "description": "Track React Native resources.",
+                            "type": "boolean"
+                        },
+                        "trackErrors": {
+                            "description": "Track React Native errors.",
+                            "type": "boolean"
+                        },
+                        "actionNameAttribute": {
+                            "description": "Specifies a custom prop to name RUM actions on elements having an `onPress` prop.",
+                            "type": "string"
+                        },
+                        "appHangThreshold": {
+                            "description": "The app hang threshold in seconds for non-fatal app hangs on iOS.",
+                            "type": "number"
+                        },
+                        "initialResourceThreshold": {
+                            "description": "The amount of time after a view starts where a Resource should be considered when calculating Time to Network-Settled (TNS).",
+                            "type": "number"
+                        },
+                        "longTaskThresholdMs": {
+                            "description": "The threshold for JavaScript long tasks reporting in milliseconds. Set to a number to enable reporting or `false` to disable.",
+                            "type": [
+                                "integer",
+                                "boolean"
+                            ]
+                        },
+                        "nativeViewTracking": {
+                            "description": "Enables native views tracking.",
+                            "type": "boolean"
+                        },
+                        "nativeInteractionTracking": {
+                            "description": "Enables native interaction tracking.",
+                            "type": "boolean"
+                        },
+                        "nativeCrashReportEnabled": {
+                            "description": "Enables crash reporting for native platforms (iOS, Android). Default `false`.",
+                            "type": "boolean"
+                        },
+                        "nativeLongTaskThresholdMs": {
+                            "description": "The threshold for native long tasks reporting in milliseconds. Set to a number to enable reporting or `false` to disable.",
+                            "type": [
+                                "integer"
+                            ]
+                        },
+                        "sessionSampleRate": {
+                            "description": "Percentage of sampled RUM sessions. Range `0`-`100`. (default `100`).",
+                            "type": "integer"
+                        },
+                        "resourceTraceSampleRate": {
+                            "description": "Percentage of tracing integrations for network calls between your app and your backend. Range `0`-`100` (default `100`).",
+                            "type": "number"
+                        },
+                        "trackBackgroundEvents": {
+                            "description": "Enables tracking of RUM events when no RUM View is active.",
+                            "type": "boolean"
+                        },
+                        "trackFrustrations": {
+                            "description": "Enables tracking of frustration signals (error taps). Defaults to `true`.",
+                            "type": "boolean"
+                        },
+                        "trackNonFatalAnrs": {
+                            "description": "Enables tracking of non-fatal ANRs on Android.",
+                            "type": "boolean"
+                        },
+                        "trackWatchdogTerminations": {
+                            "description": "Determines whether the SDK should track application termination by the watchdog on iOS. Default: `false`",
+                            "type": "boolean"
+                        },
+                        "vitalsUpdateFrequency": {
+                            "description": "Sets the preferred frequency for collecting mobile vitals.",
+                            "type": "string",
+                            "enum": [
+                                "NEVER",
+                                "RARE",
+                                "AVERAGE",
+                                "FREQUENT"
+                            ]
+                        },
+                        "trackMemoryWarnings": {
+                            "description": "Enables tracking of memory warnings as RUM events on iOS. Default: `true`",
+                            "type": "boolean"
+                        },
+                        "telemetrySampleRate": {
+                            "description": "The sampling rate for Internal Telemetry (info related to the work of the SDK internals). Range `0`-`100` (default `20`).",
+                            "type": "integer"
+                        },
+                        "customEndpoint": {
+                            "description": "Target a custom server for RUM.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "applicationId"
+                    ]
+                },
+                "logsConfiguration": {
+                    "description": "Logs-specific configuration options.",
+                    "type": "object",
+                    "properties": {
+                        "bundleLogsWithRum": {
+                            "description": "Enables RUM correlation with logs.",
+                            "type": "boolean"
+                        },
+                        "bundleLogsWithTraces": {
+                            "description": "Enables Traces correlation with logs.",
+                            "type": "boolean"
+                        },
+                        "customEndpoint": {
+                            "description": "Target a custom server for Logs.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "traceConfiguration": {
+                    "description": "Traces-specific configuration options.",
+                    "type": "object",
+                    "properties": {
+                        "customEndpoint": {
+                            "description": "Target a custom server for Traces",
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "clientToken",
+                "env"
+            ]
+        }
+    }
+}

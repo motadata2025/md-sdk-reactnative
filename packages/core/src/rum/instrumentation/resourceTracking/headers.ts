@@ -4,9 +4,9 @@
  * Copyright 2016-Present Datadog, Inc.
  */
 
-export const DATADOG_CUSTOM_HEADER_PREFIX = '_dd-custom-header';
-export const DATADOG_BAGGAGE_HEADER = `${DATADOG_CUSTOM_HEADER_PREFIX}-baggage`;
+export const MOTADATA_CUSTOM_HEADER_PREFIX = '_dd-custom-header';
+export const MOTADATA_BAGGAGE_HEADER = `${MOTADATA_CUSTOM_HEADER_PREFIX}-baggage`;
 
-export const isDatadogCustomHeader = (header: string) => {
-    return header.match(new RegExp(`^${DATADOG_CUSTOM_HEADER_PREFIX}`));
+export const isMotadataCustomHeader = (header: string) => {
+    return header.match(new RegExp(`^${MOTADATA_CUSTOM_HEADER_PREFIX}`));
 };

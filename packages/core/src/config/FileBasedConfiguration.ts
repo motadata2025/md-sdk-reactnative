@@ -10,7 +10,7 @@ import type { ResourceEventMapper } from '../rum/eventMappers/resourceEventMappe
 import type { FirstPartyHost } from '../rum/types';
 import { PropagatorType } from '../rum/types';
 
-import { DatadogProviderConfiguration } from './DatadogProviderConfiguration';
+import { MotadataProviderConfiguration } from './MotadataProviderConfiguration';
 import type { JsonConfiguration } from './FileBasedConfiguration.type';
 import { CORE_DEFAULTS } from './features/CoreConfiguration';
 import { LogsConfiguration } from './features/LogsConfiguration';
@@ -41,7 +41,7 @@ const removeUndefinedEntries = <T extends Record<string, any>>(
     ) as Partial<T>;
 };
 
-export class FileBasedConfiguration extends DatadogProviderConfiguration {
+export class FileBasedConfiguration extends MotadataProviderConfiguration {
     constructor(params?: {
         configuration?: unknown;
         errorEventMapper?: ErrorEventMapper;
@@ -63,7 +63,7 @@ export class FileBasedConfiguration extends DatadogProviderConfiguration {
             trackingConsent === undefined
         ) {
             console.warn(
-                'DATADOG: Warning - Malformed json configuration file - `clientToken`, `env` and `trackingConsent` are mandatory Core SDK properties.'
+                'MOTADATA: Warning - Malformed json configuration file - `clientToken`, `env` and `trackingConsent` are mandatory Core SDK properties.'
             );
         }
 
@@ -94,7 +94,7 @@ export class FileBasedConfiguration extends DatadogProviderConfiguration {
                     params?.actionEventMapper ?? RUM_DEFAULTS.actionEventMapper;
             } else {
                 console.warn(
-                    'DATADOG: Warning - Malformed RUM File Configuration - `applicationId` is undefined.'
+                    'MOTADATA: Warning - Malformed RUM File Configuration - `applicationId` is undefined.'
                 );
                 this.rumConfiguration = undefined;
             }
@@ -122,11 +122,11 @@ const resolveJSONConfiguration = (
     userSpecifiedConfiguration: unknown
 ): Record<string, any> => {
     if (typeof userSpecifiedConfiguration !== 'object') {
-        console.error(`Failed to parse the Datadog configuration file you provided.
-Your configuration must validate the node_modules/@datadog/mobile-react-native/datadog-configuration.schema.json JSON schema.
+        console.error(`Failed to parse the Motadata configuration file you provided.
+Your configuration must validate the node_modules/@motadata/mobile-react-native/motadata-configuration.schema.json JSON schema.
 You can use VSCode to check your configuration by adding the following line to your JSON file:
 {
-    "$schema": "./node_modules/@datadog/mobile-react-native/datadog-configuration.schema.json",
+    "$schema": "./node_modules/@motadata/mobile-react-native/motadata-configuration.schema.json",
 }`);
 
         return {};
@@ -239,7 +239,7 @@ const buildFirstPartyHosts = (
             propagatorTypes: propagatorTypes.map(formatPropagatorType)
         }));
     } catch (error) {
-        console.error(`Failed to parse the first party hosts from the Datadog configuration file you provided:
+        console.error(`Failed to parse the first party hosts from the Motadata configuration file you provided:
 ${(error as any).message}
 The first party hosts will not be set for this session.
 `);
@@ -257,8 +257,8 @@ export const formatPropagatorType = (
         case 'b3multi': {
             return PropagatorType.B3MULTI;
         }
-        case 'datadog': {
-            return PropagatorType.DATADOG;
+        case 'motadata': {
+            return PropagatorType.MOTADATA;
         }
         case 'tracecontext': {
             return PropagatorType.TRACECONTEXT;
@@ -333,7 +333,7 @@ const buildBatchSize = (batchSize: string | undefined): BatchSize => {
             return BatchSize.SMALL;
         default:
             console.warn(
-                `DATADOG: Warning - Malformed json configuration file - invalid batchSize: ${batchSize}. The default value will be used: ${CORE_DEFAULTS.batchSize}.`
+                `MOTADATA: Warning - Malformed json configuration file - invalid batchSize: ${batchSize}. The default value will be used: ${CORE_DEFAULTS.batchSize}.`
             );
             return CORE_DEFAULTS.batchSize;
     }
@@ -355,7 +355,7 @@ const buildBatchProcessingLevel = (
             return BatchProcessingLevel.LOW;
         default:
             console.warn(
-                `DATADOG: Warning - Malformed json configuration file - invalid batchProcessingLevel: ${batchProcessingLevel}. The default value will be used: ${CORE_DEFAULTS.batchProcessingLevel}.`
+                `MOTADATA: Warning - Malformed json configuration file - invalid batchProcessingLevel: ${batchProcessingLevel}. The default value will be used: ${CORE_DEFAULTS.batchProcessingLevel}.`
             );
             return CORE_DEFAULTS.batchProcessingLevel;
     }
@@ -377,7 +377,7 @@ const buildUploadFrequency = (
             return UploadFrequency.RARE;
         default:
             console.warn(
-                `DATADOG: Warning - Malformed json configuration file - invalid uploadFrequency: ${uploadFrequency}. The default value will be used: ${CORE_DEFAULTS.uploadFrequency}.`
+                `MOTADATA: Warning - Malformed json configuration file - invalid uploadFrequency: ${uploadFrequency}. The default value will be used: ${CORE_DEFAULTS.uploadFrequency}.`
             );
             return CORE_DEFAULTS.uploadFrequency;
     }
@@ -404,7 +404,7 @@ const buildProxyType = (proxyType: string): ProxyType | undefined => {
             return ProxyType.SOCKS;
         default:
             console.warn(
-                `DATADOG: Warning - Malformed json configuration file - invalid proxy type '${proxyType}' for proxyConfiguration.`
+                `MOTADATA: Warning - Malformed json configuration file - invalid proxy type '${proxyType}' for proxyConfiguration.`
             );
             return undefined;
     }
@@ -427,7 +427,7 @@ const buildProxyConfiguration = (
     const type = buildProxyType(rawType);
     if (type === undefined || address === undefined || port === undefined) {
         console.warn(
-            `DATADOG: Warning - Malformed json configuration file - invalid proxyConfiguration: ${proxyConfigurationToString(
+            `MOTADATA: Warning - Malformed json configuration file - invalid proxyConfiguration: ${proxyConfigurationToString(
                 proxyConfiguration
             )}. The default value will be used: ${
                 CORE_DEFAULTS.proxyConfiguration
@@ -457,7 +457,7 @@ const buildVitalsUpdateFrequency = (
             return VitalsUpdateFrequency.NEVER;
         default:
             console.warn(
-                `DATADOG: Warning - Malformed json configuration file - invalid vitalsUpdateFrequency: ${vitalsUpdateFrequency} for rumConfiguration. The default value will be used: ${RUM_DEFAULTS.vitalsUpdateFrequency}`
+                `MOTADATA: Warning - Malformed json configuration file - invalid vitalsUpdateFrequency: ${vitalsUpdateFrequency} for rumConfiguration. The default value will be used: ${RUM_DEFAULTS.vitalsUpdateFrequency}`
             );
             return RUM_DEFAULTS.vitalsUpdateFrequency;
     }

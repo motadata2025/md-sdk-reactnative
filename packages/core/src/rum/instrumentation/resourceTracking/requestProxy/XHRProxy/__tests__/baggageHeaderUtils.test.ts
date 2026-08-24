@@ -20,7 +20,7 @@ describe('formatBaggageHeader', () => {
         expect(logSpy).not.toHaveBeenCalled();
     });
 
-    it('should not encode non-datadog-specific property values and log a warning', () => {
+    it('should not encode non-motadata-specific property values and log a warning', () => {
         const entries = new Set(['user=Amélie', 'region=us east']);
         const result = formatBaggageHeader(entries);
         expect(result).toBe('user=Amélie,region=us east');
@@ -30,7 +30,7 @@ describe('formatBaggageHeader', () => {
         );
     });
 
-    it('should only encode datadog-specific property values', () => {
+    it('should only encode motadata-specific property values', () => {
         const entries = new Set([
             'user=Amélie',
             'session.id=example session id',
@@ -137,7 +137,7 @@ describe('formatBaggageHeader', () => {
         );
     });
 
-    it('should not double encode non-datadog-specific percent-encoded values', () => {
+    it('should not double encode non-motadata-specific percent-encoded values', () => {
         const entries = new Set([
             'user=foo%20bar',
             'name=Am%C3%A9lie',
@@ -151,7 +151,7 @@ describe('formatBaggageHeader', () => {
         );
     });
 
-    it('should not double encode non-datadog-specific percent-encoded property values', () => {
+    it('should not double encode non-motadata-specific percent-encoded property values', () => {
         const entries = new Set([
             'traceId=abc123;user=Am%C3%A9lie;note=hello%20world'
         ]);
@@ -163,9 +163,9 @@ describe('formatBaggageHeader', () => {
         );
     });
 
-    it('should re-encode mixed encoded/decoded datadog-specific values only once', () => {
+    it('should re-encode mixed encoded/decoded motadata-specific values only once', () => {
         const entries = new Set([
-            // should not be encoded because "user" is not datadog-specific
+            // should not be encoded because "user" is not motadata-specific
             'user=hello%20world test',
             // partially encoded: "%25" + literal space
             'session.id=example%20session id',

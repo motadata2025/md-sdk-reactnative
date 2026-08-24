@@ -115,7 +115,7 @@ export const getSourceMapStringFunction = (): typeof sourceMapString => {
 
     if (!sourceMapStringFunction) {
         throw new Error(
-            "[DATADOG METRO PLUGIN] Unexpected error: Cannot resolve sourceMapString function from Metro's internal modules."
+            "[MOTADATA METRO PLUGIN] Unexpected error: Cannot resolve sourceMapString function from Metro's internal modules."
         );
     }
 
@@ -207,7 +207,7 @@ export const lazyRequireDefaultExport = <T>(modulePaths: string[]): T => {
     const resolvedModule = safeLazyRequireDefaultExport<T>(modulePaths);
     if (!resolvedModule) {
         throw new Error(
-            `[DATADOG METRO PLUGIN] Unexpected error: cannot find module in any of the following paths: ${modulePaths.join(
+            `[MOTADATA METRO PLUGIN] Unexpected error: cannot find module in any of the following paths: ${modulePaths.join(
                 ', '
             )}`
         );

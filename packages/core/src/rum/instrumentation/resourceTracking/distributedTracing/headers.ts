@@ -4,20 +4,20 @@
  */
 
 /**
- * Datadog headers
+ * Motadata headers
  */
-export const SAMPLING_PRIORITY_HEADER_KEY = 'x-datadog-sampling-priority';
-export const ORIGIN_HEADER_KEY = 'x-datadog-origin';
-export const TRACKED_BY_HEADER_KEY = 'x-datadog-tracked-by';
+export const SAMPLING_PRIORITY_HEADER_KEY = 'x-motadata-sampling-priority';
+export const ORIGIN_HEADER_KEY = 'x-motadata-origin';
+export const TRACKED_BY_HEADER_KEY = 'x-motadata-tracked-by';
 export const TRACKED_BY_HEADER_VALUE = 'react-native';
 export const ORIGIN_RUM = 'rum';
-export const TRACE_ID_HEADER_KEY = 'x-datadog-trace-id';
-export const PARENT_ID_HEADER_KEY = 'x-datadog-parent-id';
-export const TAGS_HEADER_KEY = 'x-datadog-tags';
-export const DD_TRACE_ID_TAG = '_dd.p.tid';
-export const DD_RUM_SESSION_ID_TAG = 'session.id';
-export const DD_RUM_USER_ID_TAG = 'user.id';
-export const DD_RUM_ACCOUNT_ID_TAG = 'account.id';
+export const TRACE_ID_HEADER_KEY = 'x-motadata-trace-id';
+export const PARENT_ID_HEADER_KEY = 'x-motadata-parent-id';
+export const TAGS_HEADER_KEY = 'x-motadata-tags';
+export const MD_TRACE_ID_TAG = '_dd.p.tid';
+export const MD_RUM_SESSION_ID_TAG = 'session.id';
+export const MD_RUM_USER_ID_TAG = 'user.id';
+export const MD_RUM_ACCOUNT_ID_TAG = 'account.id';
 
 /**
  * OTel headers

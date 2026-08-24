@@ -7,9 +7,9 @@
 import { InternalLog } from '../../../../../InternalLog';
 import { SdkVerbosity } from '../../../../../config/types/SdkVerbosity';
 import {
-    DD_RUM_ACCOUNT_ID_TAG,
-    DD_RUM_SESSION_ID_TAG,
-    DD_RUM_USER_ID_TAG
+    MD_RUM_ACCOUNT_ID_TAG,
+    MD_RUM_SESSION_ID_TAG,
+    MD_RUM_USER_ID_TAG
 } from '../../distributedTracing/headers';
 
 // The resulting baggage-string should contain 64 list-members or less (https://www.w3.org/TR/baggage/#limits)
@@ -55,12 +55,12 @@ export function formatBaggageHeader(entries: Set<string>): string | null {
 
         const rawKey = mainPart.slice(0, idx).trim();
         const rawValue = mainPart.slice(idx + 1).trim();
-        const isDatadogKey = isDatadogPropertyKey(rawKey);
+        const isMotadataKey = isMotadataPropertyKey(rawKey);
         let encodedValue: string;
 
-        if (isDatadogKey) {
-            // Only encode datadog-specific properties
-            encodedValue = isDatadogKey ? encodeValue(rawValue) : rawValue;
+        if (isMotadataKey) {
+            // Only encode motadata-specific properties
+            encodedValue = isMotadataKey ? encodeValue(rawValue) : rawValue;
         } else {
             if (!TOKEN_REGEX.test(rawKey)) {
                 InternalLog.log(
@@ -75,7 +75,7 @@ export function formatBaggageHeader(entries: Set<string>): string | null {
                 );
             }
 
-            // non-datadog properties are not encoded
+            // non-motadata properties are not encoded
             encodedValue = rawValue;
         }
 
@@ -200,15 +200,15 @@ function getBaggageHeaderSafeChars(): Set<string> {
 }
 
 /**
- * Checks if the given key is a Datadog-specific baggage property key.
+ * Checks if the given key is a Motadata-specific baggage property key.
  * @param key the baggage property key.
- * @returns true if the key is Datadog-specific, false otherwise.
+ * @returns true if the key is Motadata-specific, false otherwise.
  */
-function isDatadogPropertyKey(key: string): boolean {
+function isMotadataPropertyKey(key: string): boolean {
     return (
-        key === DD_RUM_SESSION_ID_TAG ||
-        key === DD_RUM_USER_ID_TAG ||
-        key === DD_RUM_ACCOUNT_ID_TAG
+        key === MD_RUM_SESSION_ID_TAG ||
+        key === MD_RUM_USER_ID_TAG ||
+        key === MD_RUM_ACCOUNT_ID_TAG
     );
 }
 

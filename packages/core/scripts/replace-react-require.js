@@ -15,8 +15,8 @@
  * the createElement function (which is still used in current versions in some cases).
  * From React 18, this seems to become the default. This is also used by default in Expo since Expo 45 at least.
  * On React versions below 16.14, trying to import 'react/jsx-runtime' would fail (see https://github.com/facebook/metro/issues/836)
- * and this failure then disables all imports (see first fix: https://github.com/DataDog/dd-sdk-reactnative/pull/310).
- * However, metro does not support inline requires (see https://github.com/DataDog/dd-sdk-reactnative/issues/353), so
+ * and this failure then disables all imports (see first fix: https://github.com/motadata2025/md-sdk-reactnative/pull/310).
+ * However, metro does not support inline requires (see https://github.com/motadata2025/md-sdk-reactnative/issues/353), so
  * we replace the import in this postinstall script.
  *
  * We choose to have 'react/jsx-runtime' as default in the code, that way we don't have to deal with this change in the source when we work on it.
@@ -26,7 +26,7 @@
 // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
 const { readFileSync, writeFileSync } = require('fs');
 
-process.stdout.write('[datadog] postinstall replace-react-require starts\n');
+process.stdout.write('[motadata] postinstall replace-react-require starts\n');
 
 const GET_JSX_RUNTIME_RELATIVE_PATH =
     'rum/instrumentation/interactionTracking/getJsxRuntime';
@@ -42,14 +42,14 @@ const isJsxExportedInReactVersion = (major, minor) => {
 };
 
 const replaceReactJsxRequire = () => {
-    process.stdout.write('[datadog] replacing react/jsx-runtime by react\n');
-    const datadogPath = `${__dirname}/..`;
+    process.stdout.write('[motadata] replacing react/jsx-runtime by react\n');
+    const motadataPath = `${__dirname}/..`;
     const locations = [
-        { directory: `${datadogPath}/src`, extension: 'ts' },
-        { directory: `${datadogPath}/lib/commonjs`, extension: 'js' },
-        { directory: `${datadogPath}/lib/commonjs`, extension: 'js.map' },
-        { directory: `${datadogPath}/lib/module`, extension: 'js' },
-        { directory: `${datadogPath}/lib/module`, extension: 'js.map' }
+        { directory: `${motadataPath}/src`, extension: 'ts' },
+        { directory: `${motadataPath}/lib/commonjs`, extension: 'js' },
+        { directory: `${motadataPath}/lib/commonjs`, extension: 'js.map' },
+        { directory: `${motadataPath}/lib/module`, extension: 'js' },
+        { directory: `${motadataPath}/lib/module`, extension: 'js.map' }
     ];
 
     locations.forEach(location => {
@@ -66,14 +66,14 @@ try {
     // Get React version
     // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
     const [major, minor] = require('react/package.json').version.split('.');
-    process.stdout.write(`[datadog] found react version ${major}${minor}\n`);
+    process.stdout.write(`[motadata] found react version ${major}${minor}\n`);
 
     if (!isJsxExportedInReactVersion(major, minor)) {
         replaceReactJsxRequire();
     }
-    process.stdout.write('[datadog] postinstall replace-react-require end\n');
+    process.stdout.write('[motadata] postinstall replace-react-require end\n');
 } catch (error) {
     process.stderr.write(
-        `[datadog] Error running replace-react-require: ${error}\n`
+        `[motadata] Error running replace-react-require: ${error}\n`
     );
 }

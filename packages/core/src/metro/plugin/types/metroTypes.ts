@@ -78,16 +78,16 @@ export type Bundle = {
  */
 export type MetroBundleWithMap = { code: string; map: string };
 
-export type DatadogMetroSerializer = (
+export type MotadataMetroSerializer = (
     entryPoint: string,
     preModules: ReadonlyArray<Module>,
     graph: ReadOnlyGraph,
     options: SerializerOptions & {
-        datadogBundleCallback?: (bundle: Bundle) => Bundle;
+        motadataBundleCallback?: (bundle: Bundle) => Bundle;
     }
 ) => Promise<string | MetroBundleWithMap>;
 
-export type DatadogDebugIdModule = Module<MetroVirtualModuleOutput> & {
+export type MotadataDebugIdModule = Module<MetroVirtualModuleOutput> & {
     setSource: (code: string) => void;
 };
 

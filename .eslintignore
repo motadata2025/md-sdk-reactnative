@@ -1,10 +1,4 @@
 node_modules
-example
-example-new-architecture
-benchmarks
 dist
 lib
 packages/core/android/build/reports/tests
-// TODO remove that line once bridges updated
-// with proper order of context and timestamp
-packages/**/src/foundation.tsx

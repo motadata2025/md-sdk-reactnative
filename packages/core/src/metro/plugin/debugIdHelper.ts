@@ -16,7 +16,7 @@ import type {
     MixedOutput,
     Module,
     MetroBundleWithMap,
-    DatadogDebugIdModule
+    MotadataDebugIdModule
 } from './types/metroTypes';
 import { getCreateCountingSetFunction, getCountLinesFunction } from './utils';
 
@@ -28,13 +28,13 @@ const DEBUG_ID_BUNDLE_REGEX = /\/\/\s?([#@])\s?debugId=([\d\-a-zA-Z]*$)/m;
 /**
  * Path name for the Debug ID Metro Virtual Module.
  */
-export const DEBUG_ID_MODULE_PATH = '__datadog_debugid__';
+export const DEBUG_ID_MODULE_PATH = '__motadata_debugid__';
 
 /**
  * The initial placeholder for the injected Debug ID in the virtual module, replaced
  * later by the actual Debug ID.
  */
-export const DEBUG_ID_PLACEHOLDER = '__datadog_debug_id_placeholder__';
+export const DEBUG_ID_PLACEHOLDER = '__motadata_debug_id_placeholder__';
 
 /**
  * A comment that can be found at the end of the JS bundle, to specify the URL of the sourcemap.
@@ -52,14 +52,14 @@ export const DEBUG_ID_COMMENT = '//# debugId=';
  * The Debug ID is injected in the virtual module as a plain string, using this prefix.
  * It is later retrieved by searching it in the bundle, using the same prefix.
  */
-const DEBUG_ID_METADATA_PREFIX = 'datadog-debug-id-';
+const DEBUG_ID_METADATA_PREFIX = 'motadata-debug-id-';
 
 /**
  * Creates a virtual module to embed a debug ID into the bundle.
  * @param debugId - the debug ID to inject into the bundle, or a placeholder.
  * @returns The Debug ID virtual module.
  */
-export const createDebugIdModule = (debugId: string): DatadogDebugIdModule => {
+export const createDebugIdModule = (debugId: string): MotadataDebugIdModule => {
     let debugIdCode = createDebugIdSnippet(debugId);
     const countLines = getCountLinesFunction();
     const createCountingSet = getCreateCountingSetFunction();
@@ -92,7 +92,7 @@ export const createDebugIdModule = (debugId: string): DatadogDebugIdModule => {
  */
 export const addDebugIdModule = (
     preModules: readonly Module<MixedOutput>[],
-    debugIdModule: DatadogDebugIdModule
+    debugIdModule: MotadataDebugIdModule
 ): Module<MixedOutput>[] => {
     const result = [...preModules];
     const hasPrelude = result.length > 0 && result[0]?.path === '__prelude__';
@@ -114,7 +114,7 @@ export const addDebugIdModule = (
  * @returns A minified JavaScript string that performs the injection.
  */
 export const createDebugIdSnippet = (debugId: string) => {
-    return `var _datadogDebugIds,_datadogDebugIdMeta;void 0===_datadogDebugIds&&(_datadogDebugIds={});try{var stack=(new Error).stack;stack&&(_datadogDebugIds[stack]="${debugId}",_datadogDebugIdMeta="${DEBUG_ID_METADATA_PREFIX}${debugId}")}catch(e){}`;
+    return `var _motadataDebugIds,_motadataDebugIdMeta;void 0===_motadataDebugIds&&(_motadataDebugIds={});try{var stack=(new Error).stack;stack&&(_motadataDebugIds[stack]="${debugId}",_motadataDebugIdMeta="${DEBUG_ID_METADATA_PREFIX}${debugId}")}catch(e){}`;
 };
 
 /**
@@ -225,28 +225,28 @@ export const injectDebugIdInCodeAndSourceMap = (
 
 const writeDebugIdToFile = (debugId: string): void => {
     try {
-        const datadogPackageJsonPath = require.resolve(
-            '@datadog/mobile-react-native/package.json'
+        const motadataPackageJsonPath = require.resolve(
+            '@motadata/mobile-react-native/package.json'
         );
-        const datadogTmpDir = path.join(
-            path.dirname(datadogPackageJsonPath),
+        const motadataTmpDir = path.join(
+            path.dirname(motadataPackageJsonPath),
             '.tmp'
         );
-        const debugIdFilePath = path.join(datadogTmpDir, 'debug_id');
+        const debugIdFilePath = path.join(motadataTmpDir, 'debug_id');
 
         // Remove the existing Debug ID file if it exists
         if (existsSync(debugIdFilePath)) {
             unlinkSync(debugIdFilePath);
         }
 
-        if (!existsSync(datadogTmpDir)) {
-            mkdirSync(datadogTmpDir);
+        if (!existsSync(motadataTmpDir)) {
+            mkdirSync(motadataTmpDir);
         }
 
         writeFileSync(debugIdFilePath, debugId, 'utf8');
     } catch (error) {
         console.warn(
-            '[DATADOG METRO PLUGIN] Failed to write Debug ID to file:',
+            '[MOTADATA METRO PLUGIN] Failed to write Debug ID to file:',
             error
         );
     }
@@ -266,7 +266,7 @@ export const _isDebugIdInBundle = (
 
     if (match[2] !== debugId) {
         console.warn(
-            '[DATADOG METRO PLUGIN] The debug ID found in the file does not match the calculated debug ID.'
+            '[MOTADATA METRO PLUGIN] The debug ID found in the file does not match the calculated debug ID.'
         );
     }
 

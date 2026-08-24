@@ -13,7 +13,7 @@ import { RUM_DEFAULTS } from '../features/RumConfiguration';
 import type { TraceConfiguration } from '../features/TraceConfiguration';
 
 /**
- * Auto Instrumentation configuration passed to DatadogProvider.
+ * Auto Instrumentation configuration passed to MotadataProvider.
  * Does not include default values.
  */
 export type AutoInstrumentationConfiguration = {

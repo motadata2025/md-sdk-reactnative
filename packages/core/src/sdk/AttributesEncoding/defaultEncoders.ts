@@ -7,7 +7,7 @@
 /* ----------------------------------------
  * Built-in encoders
  * -------------------------------------- */
-import { DdSdk } from '../DdSdk';
+import { MdSdk } from '../MdSdk';
 
 import {
     getErrorMessage,
@@ -48,12 +48,12 @@ export const arrayEncoder: AttributeEncoder<unknown[]> = {
     check: Array.isArray,
     encode: (arr: unknown[]) =>
         arr.map(x =>
-            sanitizeForJson(x, [...DdSdk.attributeEncoders, ...builtInEncoders])
+            sanitizeForJson(x, [...MdSdk.attributeEncoders, ...builtInEncoders])
         )
 };
 
 /**
- * Default Datadog Date Encoder.
+ * Default Motadata Date Encoder.
  * This does not make assumptions on format; uses String(date).
  */
 export const dateEncoder: AttributeEncoder<Date> = {
@@ -74,7 +74,7 @@ export const errorEncoder: AttributeEncoder<any> = {
         // In React Native, some errors have extra fields we want to capture
         if (e && typeof e === 'object') {
             const allEncoders = [
-                ...DdSdk.attributeEncoders,
+                ...MdSdk.attributeEncoders,
                 ...builtInEncoders
             ];
 
@@ -156,7 +156,7 @@ export const mapEncoder: AttributeEncoder<Map<unknown, unknown>> = {
                 }
 
                 const allEncoders = [
-                    ...DdSdk.attributeEncoders,
+                    ...MdSdk.attributeEncoders,
                     ...builtInEncoders
                 ];
                 entries.push({

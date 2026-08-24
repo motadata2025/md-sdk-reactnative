@@ -1,18 +1,18 @@
 {
-    "name": "@datadog/mobile-react-native",
-    "version": "3.5.3",
-    "description": "A client-side React Native module to interact with Datadog",
+    "name": "@motadata/mobile-react-native",
+    "version": "1.0.0",
+    "description": "A client-side React Native module to interact with Motadata",
     "keywords": [
-        "datadog",
+        "motadata",
+        "rum",
         "react-native",
-        "ios",
         "android"
     ],
-    "author": "Datadog (https://github.com/DataDog)",
-    "homepage": "https://github.com/DataDog/dd-sdk-reactnative#readme",
-    "repository": "https://github.com/DataDog/dd-sdk-reactnative",
+    "author": "Motadata",
+    "homepage": "https://github.com/motadata2025/md-sdk-reactnative#readme",
+    "repository": "https://github.com/motadata2025/md-sdk-reactnative",
     "bugs": {
-        "url": "https://github.com/DataDog/dd-sdk-reactnative/issues"
+        "url": "https://github.com/motadata2025/md-sdk-reactnative/issues"
     },
     "license": "Apache-2.0",
     "main": "lib/commonjs/index",
@@ -24,15 +24,10 @@
         "android/detekt.yml",
         "android/gradle.properties",
         "android/src/**",
-        "ios/Sources/**",
-        "ios/DdSdkReactNative.xcodeproj/project.xcworkspace/xcsharedata",
-        "ios/DdSdkReactNative.xcodeproj/project.xcworkspace/*.xcworkspacedata",
-        "ios/DdSdkReactNative.xcodeproj/*.pbxproj",
         "jest",
-        "DatadogSDKReactNative.podspec",
-        "datadog-sourcemaps.gradle",
-        "datadog-configuration.gradle",
-        "datadog-configuration.schema.json"
+        "motadata-sourcemaps.gradle",
+        "motadata-configuration.gradle",
+        "motadata-configuration.schema.json"
     ],
     "types": "lib/typescript/index.d.ts",
     "react-native": "src/index",
@@ -62,7 +57,7 @@
         "test": "jest",
         "lint": "eslint .",
         "prepare": "rm -rf lib && yarn bob build",
-        "postinstall": "node scripts/replace-react-require.js # Use node to execute the script for Windows, see https://github.com/DataDog/dd-sdk-reactnative/issues/358"
+        "postinstall": "node scripts/replace-react-require.js"
     },
     "peerDependencies": {
         "react": ">=16.13.1",
@@ -75,8 +70,8 @@
     "jest": {
         "preset": "react-native",
         "moduleNameMapper": {
-            "@datadog/mobile-react-native": "<rootDir>../core/src",
-            "@datadog/mobile-react-native/metro": "<rootDir>../core/src/metro"
+            "@motadata/mobile-react-native": "<rootDir>../core/src",
+            "@motadata/mobile-react-native/metro": "<rootDir>../core/src/metro"
         },
         "modulePathIgnorePatterns": [
             "<rootDir>/lib/"
@@ -108,11 +103,11 @@
         ]
     },
     "codegenConfig": {
-        "name": "DdSdkReactNative",
+        "name": "MdSdkReactNative",
         "type": "modules",
         "jsSrcsDir": "./src/specs",
         "android": {
-            "javaPackageName": "com.datadog.reactnative"
+            "javaPackageName": "com.motadata.reactnative"
         }
     },
     "dependencies": {

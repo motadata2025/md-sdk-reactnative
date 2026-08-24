@@ -12,7 +12,7 @@ import type { TraceId } from './TracingIdentifier';
 const KNUTH_FACTOR = BigInt('1111111111111111111');
 
 const DISTRIBUTED_TRACING_SAMPLING_MODULE =
-    'com.datadog.reactnative.rum.distributed_tracing_sampling';
+    'com.motadata.reactnative.rum.distributed_tracing_sampling';
 
 class _DistributedTracingSampling {
     private _maxSampledTraceId: BigInt.BigInteger | null = null;

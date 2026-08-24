@@ -3,9 +3,9 @@
  * This product includes software developed at Datadog (https://www.datadoghq.com/).
  * Copyright 2016-Present Datadog, Inc.
  */
-import { DdSdkReactNative } from './DdSdkReactNative';
+import { MdSdkReactNative } from './MdSdkReactNative';
 import { InternalLog } from './InternalLog';
-import { DatadogProviderConfiguration } from './config/DatadogProviderConfiguration';
+import { MotadataProviderConfiguration } from './config/MotadataProviderConfiguration';
 import { FileBasedConfiguration } from './config/FileBasedConfiguration';
 import type { AutoInstrumentationConfiguration } from './config/async/AutoInstrumentationConfiguration';
 import type { PartialInitializationConfiguration } from './config/async/PartialInitializationConfiguration';
@@ -30,50 +30,39 @@ import {
     UploadFrequency,
     VitalsUpdateFrequency
 } from './config/types';
-import { DdFlags } from './flags/DdFlags';
-import type { FlagsClient } from './flags/FlagsClient';
-import type {
-    FlagsConfiguration,
-    FlagDetails,
-    EvaluationContext,
-    PrimitiveValue
-} from './flags/types';
-import { DdLogs } from './logs/DdLogs';
-import { DdRum } from './rum/DdRum';
-import { DdBabelInteractionTracking } from './rum/instrumentation/interactionTracking/DdBabelInteractionTracking';
+import { MdRum } from './rum/MdRum';
+import { MdBabelInteractionTracking } from './rum/instrumentation/interactionTracking/MdBabelInteractionTracking';
 import { __ddExtractText } from './rum/instrumentation/interactionTracking/ddBabelUtils';
-import { DatadogTracingContext } from './rum/instrumentation/resourceTracking/distributedTracing/DatadogTracingContext';
-import { DatadogTracingIdentifier } from './rum/instrumentation/resourceTracking/distributedTracing/DatadogTracingIdentifier';
+import { MotadataTracingContext } from './rum/instrumentation/resourceTracking/distributedTracing/MotadataTracingContext';
+import { MotadataTracingIdentifier } from './rum/instrumentation/resourceTracking/distributedTracing/MotadataTracingIdentifier';
 import {
     TracingIdFormat,
     TracingIdType
 } from './rum/instrumentation/resourceTracking/distributedTracing/TracingIdentifier';
 import {
-    DATADOG_GRAPH_QL_OPERATION_NAME_HEADER,
-    DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
-    DATADOG_GRAPH_QL_VARIABLES_HEADER,
-    DATADOG_GRAPH_QL_PAYLOAD_HEADER,
-    DATADOG_GRAPH_QL_ERROR_HEADER
+    MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER,
+    MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
+    MOTADATA_GRAPH_QL_VARIABLES_HEADER,
+    MOTADATA_GRAPH_QL_PAYLOAD_HEADER,
+    MOTADATA_GRAPH_QL_ERROR_HEADER
 } from './rum/instrumentation/resourceTracking/graphql/graphqlHeaders';
 import type { FirstPartyHost } from './rum/types';
 import { PropagatorType, RumActionType } from './rum/types';
-import { DatadogProvider } from './sdk/DatadogProvider/DatadogProvider';
-import { DdSdk } from './sdk/DdSdk';
-import { DdTrace } from './trace/DdTrace';
+import { MotadataProvider } from './sdk/MotadataProvider/MotadataProvider';
+import { MdSdk } from './sdk/MdSdk';
+import { MdTrace } from './trace/MdTrace';
 import { ErrorSource, FeatureOperationFailure } from './types';
 import { DefaultTimeProvider } from './utils/time-provider/DefaultTimeProvider';
 import type { Timestamp } from './utils/time-provider/TimeProvider';
 import { TimeProvider } from './utils/time-provider/TimeProvider';
 
 export {
-    DatadogProvider,
-    DatadogProviderConfiguration,
+    MotadataProvider,
+    MotadataProviderConfiguration,
     FileBasedConfiguration,
     InitializationMode,
-    DdLogs,
-    DdFlags,
-    DdTrace,
-    DdRum,
+    MdTrace,
+    MdRum,
     RumActionType,
     ErrorSource,
     FeatureOperationFailure,
@@ -81,8 +70,8 @@ export {
     RumConfiguration,
     LogsConfiguration,
     TraceConfiguration,
-    DdSdkReactNative,
-    DdSdk,
+    MdSdkReactNative,
+    MdSdk,
     InternalLog,
     ProxyConfiguration,
     ProxyType,
@@ -95,16 +84,16 @@ export {
     BatchProcessingLevel,
     TimeProvider,
     DefaultTimeProvider,
-    DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
-    DATADOG_GRAPH_QL_OPERATION_NAME_HEADER,
-    DATADOG_GRAPH_QL_VARIABLES_HEADER,
-    DATADOG_GRAPH_QL_PAYLOAD_HEADER,
-    DATADOG_GRAPH_QL_ERROR_HEADER,
+    MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
+    MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER,
+    MOTADATA_GRAPH_QL_VARIABLES_HEADER,
+    MOTADATA_GRAPH_QL_PAYLOAD_HEADER,
+    MOTADATA_GRAPH_QL_ERROR_HEADER,
     TracingIdType,
     TracingIdFormat,
-    DatadogTracingIdentifier,
-    DatadogTracingContext,
-    DdBabelInteractionTracking,
+    MotadataTracingIdentifier,
+    MotadataTracingContext,
+    MdBabelInteractionTracking,
     __ddExtractText
 };
 export type {
@@ -115,10 +104,5 @@ export type {
     CoreConfigurationOptions,
     RumConfigurationOptions,
     LogsConfigurationOptions,
-    TraceConfigurationOptions,
-    FlagsConfiguration,
-    FlagsClient,
-    EvaluationContext,
-    PrimitiveValue,
-    FlagDetails
+    TraceConfigurationOptions
 };

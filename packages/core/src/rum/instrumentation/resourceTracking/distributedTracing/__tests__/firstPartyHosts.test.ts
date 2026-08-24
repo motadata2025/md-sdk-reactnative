@@ -13,10 +13,10 @@ describe('firstPartyHosts', () => {
             const regexMap = firstPartyHostsRegexMapBuilder([
                 {
                     match: 'api.example.com',
-                    propagatorTypes: [PropagatorType.DATADOG]
+                    propagatorTypes: [PropagatorType.MOTADATA]
                 }
             ]);
-            expect(regexMap[0].propagatorType).toBe('datadog');
+            expect(regexMap[0].propagatorType).toBe('motadata');
             expect(regexMap[0].regex.test('api.example.com')).toBe(true);
             expect(regexMap[0].regex.test('api.myapi.com')).toBe(false);
         });
@@ -25,7 +25,7 @@ describe('firstPartyHosts', () => {
             const regexMap = firstPartyHostsRegexMapBuilder([
                 {
                     match: 'api.example.com',
-                    propagatorTypes: [PropagatorType.DATADOG]
+                    propagatorTypes: [PropagatorType.MOTADATA]
                 }
             ]);
             expect(regexMap[0].regex.test('apiiexample.com')).toBe(false);

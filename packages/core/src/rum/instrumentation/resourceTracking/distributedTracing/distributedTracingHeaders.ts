@@ -7,10 +7,10 @@ import { PropagatorType } from '../../../types';
 import type { FirstPartyHost } from '../../../types';
 import { URLHostParser } from '../requestProxy/XHRProxy/URLHostParser';
 
-import { DatadogTracingContext } from './DatadogTracingContext';
+import { MotadataTracingContext } from './MotadataTracingContext';
 import { TracingIdFormat } from './TracingIdentifier';
 import type { TraceId, SpanId } from './TracingIdentifier';
-import type { DdRumResourceTracingAttributes } from './distributedTracingAttributes';
+import type { MdRumResourceTracingAttributes } from './distributedTracingAttributes';
 import {
     generateTracingAttributesWithSampling,
     getTracingAttributes
@@ -22,10 +22,10 @@ import {
     B3_MULTI_SPAN_ID_HEADER_KEY,
     B3_MULTI_TRACE_ID_HEADER_KEY,
     BAGGAGE_HEADER_KEY,
-    DD_RUM_ACCOUNT_ID_TAG,
-    DD_RUM_SESSION_ID_TAG,
-    DD_RUM_USER_ID_TAG,
-    DD_TRACE_ID_TAG,
+    MD_RUM_ACCOUNT_ID_TAG,
+    MD_RUM_SESSION_ID_TAG,
+    MD_RUM_USER_ID_TAG,
+    MD_TRACE_ID_TAG,
     ORIGIN_HEADER_KEY,
     ORIGIN_RUM,
     PARENT_ID_HEADER_KEY,
@@ -37,18 +37,18 @@ import {
 } from './headers';
 
 export const getTracingHeadersFromAttributes = (
-    tracingAttributes: DdRumResourceTracingAttributes
+    tracingAttributes: MdRumResourceTracingAttributes
 ): { header: string; value: string }[] => {
     const headers: { header: string; value: string }[] = [];
     if (tracingAttributes.tracingStrategy === 'DISCARD') {
         return headers;
     }
 
-    let hasDatadogOrW3CPropagator = false;
+    let hasMotadataOrW3CPropagator = false;
     tracingAttributes.propagatorTypes.forEach(propagator => {
         switch (propagator) {
-            case PropagatorType.DATADOG: {
-                hasDatadogOrW3CPropagator = true;
+            case PropagatorType.MOTADATA: {
+                hasMotadataOrW3CPropagator = true;
                 headers.push(
                     {
                         header: ORIGIN_HEADER_KEY,
@@ -73,14 +73,14 @@ export const getTracingHeadersFromAttributes = (
                 );
                 headers.push({
                     header: TAGS_HEADER_KEY,
-                    value: `${DD_TRACE_ID_TAG}=${tracingAttributes.traceId.toString(
+                    value: `${MD_TRACE_ID_TAG}=${tracingAttributes.traceId.toString(
                         TracingIdFormat.paddedHighHex
                     )}`
                 });
                 break;
             }
             case PropagatorType.TRACECONTEXT: {
-                hasDatadogOrW3CPropagator = true;
+                hasMotadataOrW3CPropagator = true;
                 const isSampled =
                     tracingAttributes.samplingPriorityHeader === '1';
                 headers.push(
@@ -138,25 +138,25 @@ export const getTracingHeadersFromAttributes = (
         }
     });
 
-    if (hasDatadogOrW3CPropagator) {
+    if (hasMotadataOrW3CPropagator) {
         if (tracingAttributes.rumSessionId) {
             headers.push({
                 header: BAGGAGE_HEADER_KEY,
-                value: `${DD_RUM_SESSION_ID_TAG}=${tracingAttributes.rumSessionId}`
+                value: `${MD_RUM_SESSION_ID_TAG}=${tracingAttributes.rumSessionId}`
             });
         }
 
         if (tracingAttributes.userId) {
             headers.push({
                 header: BAGGAGE_HEADER_KEY,
-                value: `${DD_RUM_USER_ID_TAG}=${tracingAttributes.userId}`
+                value: `${MD_RUM_USER_ID_TAG}=${tracingAttributes.userId}`
             });
         }
 
         if (tracingAttributes.accountId) {
             headers.push({
                 header: BAGGAGE_HEADER_KEY,
-                value: `${DD_RUM_ACCOUNT_ID_TAG}=${tracingAttributes.accountId}`
+                value: `${MD_RUM_ACCOUNT_ID_TAG}=${tracingAttributes.accountId}`
             });
         }
     }
@@ -171,7 +171,7 @@ export const getTracingContext = (
     rumSessionId?: string,
     userId?: string,
     accountId?: string
-): DatadogTracingContext => {
+): MotadataTracingContext => {
     const hostname = URLHostParser(url);
     const firstPartyHostsRegexMap = firstPartyHostsRegexMapBuilder(
         firstPartyHosts
@@ -197,7 +197,7 @@ export const getTracingContextForPropagators = (
     rumSessionId?: string,
     userId?: string,
     accountId?: string
-): DatadogTracingContext => {
+): MotadataTracingContext => {
     return getTracingContextForAttributes(
         generateTracingAttributesWithSampling(
             tracingSamplingRate,
@@ -211,9 +211,9 @@ export const getTracingContextForPropagators = (
 };
 
 const getTracingContextForAttributes = (
-    tracingAttributes: DdRumResourceTracingAttributes,
+    tracingAttributes: MdRumResourceTracingAttributes,
     tracingSamplingRate: number
-): DatadogTracingContext => {
+): MotadataTracingContext => {
     const requestHeaders = getTracingHeadersFromAttributes(tracingAttributes);
     const resourceContext: Record<string, string | number> = {};
 
@@ -233,7 +233,7 @@ const getTracingContextForAttributes = (
 
     resourceContext['_dd.rule_psr'] = tracingSamplingRate / 100;
 
-    return new DatadogTracingContext(
+    return new MotadataTracingContext(
         requestHeaders,
         resourceContext,
         tracingAttributes.traceId,

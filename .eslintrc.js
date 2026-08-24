@@ -30,7 +30,7 @@ module.exports = {
         '@typescript-eslint/no-inferrable-types': 0,
         '@typescript-eslint/no-explicit-any': 0,
         'prettier/prettier': 'error',
-        // The next rules come from datadog's main ts repository
+        // The next rules come from Motadata's main ts repository
         'block-scoped-var': 'error',
         curly: ['error', 'all'],
         eqeqeq: [

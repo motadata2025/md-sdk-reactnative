@@ -7,13 +7,13 @@
 import type { Attributes } from '../sdk/AttributesSingleton/types';
 import type { ErrorSource, FeatureOperationFailure } from '../types';
 
-import type { DatadogTracingContext } from './instrumentation/resourceTracking/distributedTracing/DatadogTracingContext';
-import type { DatadogTracingIdentifier } from './instrumentation/resourceTracking/distributedTracing/DatadogTracingIdentifier';
+import type { MotadataTracingContext } from './instrumentation/resourceTracking/distributedTracing/MotadataTracingContext';
+import type { MotadataTracingIdentifier } from './instrumentation/resourceTracking/distributedTracing/MotadataTracingIdentifier';
 
 /**
- * The entry point to use Datadog's RUM feature.
+ * The entry point to use Motadata's RUM feature.
  */
-export type DdRumType = {
+export type MdRumType = {
     /**
      * Start tracking a RUM View.
      * @param key: The view unique key identifier.
@@ -193,10 +193,10 @@ export type DdRumType = {
 
     /**
      * Gets the tracing context for the given url, tracingSamplingRate and firstPartyHosts.
-     * The returned {@link DatadogTracingContext} can be used to retrieve the tracing headers
+     * The returned {@link MotadataTracingContext} can be used to retrieve the tracing headers
      * to append to your network request, and the attributes to add to your RUM Resource.
      *
-     * See also `DdRum.getTracingContextForPropagators(...)` if you do not intend to use `firstPartyHosts`.
+     * See also `MdRum.getTracingContextForPropagators(...)` if you do not intend to use `firstPartyHosts`.
      *
      * @param url The request URL.
      * @param tracingSamplingRate Percentage of tracing integrations for network calls between your app and your backend. Range `0`-`100`.
@@ -206,12 +206,12 @@ export type DdRumType = {
         url: string,
         tracingSamplingRate: number,
         firstPartyHosts: FirstPartyHost[]
-    ): DatadogTracingContext;
+    ): MotadataTracingContext;
 
     /**
      * Gets the tracing context for the given list of propagator types and tracing sampling rate.
      *
-     * The returned {@link DatadogTracingContext} can be used to retrieve the tracing headers
+     * The returned {@link MotadataTracingContext} can be used to retrieve the tracing headers
      * to append to your network request, and the attributes to add to your RUM Resource.
      * @param propagators The list of propagators of type {@link PropagatorType}
      * @param tracingSamplingRate Percentage of tracing integrations for network calls between your app and your backend. Range `0`-`100`.
@@ -219,17 +219,17 @@ export type DdRumType = {
     getTracingContextForPropagators(
         propagators: PropagatorType[],
         tracingSamplingRate: number
-    ): DatadogTracingContext;
+    ): MotadataTracingContext;
 
     /**
      * Generates a unique 128bit Trace ID.
      */
-    generateTraceId(): DatadogTracingIdentifier;
+    generateTraceId(): MotadataTracingIdentifier;
 
     /**
      * Generates a unique 128bit Span ID.
      */
-    generateSpanId(): DatadogTracingIdentifier;
+    generateSpanId(): MotadataTracingIdentifier;
 
     /**
      * Starts a Feature Operation, representing a high-level logical flow within your application (e.g., `login_flow`).
@@ -303,13 +303,13 @@ export type ResourceKind =
 
 /**
  * Type of instrumentation on the host.
- * - DATADOG: Datadog’s propagator (`x-datadog-*`)
+ * - MOTADATA: Motadata’s propagator (`x-motadata-*`)
  * - TRACECONTEXT: W3C Trace Context (`traceparent`)
  * - B3: B3 single header (`b3`)
  * - B3MULTI: B3 multiple headers (`X-B3-*`)
  */
 export enum PropagatorType {
-    DATADOG = 'datadog',
+    MOTADATA = 'motadata',
     TRACECONTEXT = 'tracecontext',
     B3 = 'b3',
     B3MULTI = 'b3multi'

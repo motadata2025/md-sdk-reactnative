@@ -8,7 +8,7 @@
 let debugId: any | null = null;
 
 /**
- * Loads the Datadog Debug ID dynamically
+ * Loads the Motadata Debug ID dynamically
  */
 function loadDebugId() {
     if (typeof globalThis === 'undefined') {
@@ -17,13 +17,13 @@ function loadDebugId() {
 
     const shouldWarn = process.env.NODE_ENV !== 'test' && __DEV__ !== true;
     try {
-        const debugIds = (globalThis as any)._datadogDebugIds;
+        const debugIds = (globalThis as any)._motadataDebugIds;
         const hasDebugId = debugIds && Object.keys(debugIds).length > 0;
 
         if (!hasDebugId) {
             if (shouldWarn) {
                 console.warn(
-                    '[Datadog SDK] Debug ID not found. Are you using @datadog/mobile-react-native/metro config?'
+                    '[Motadata SDK] Debug ID not found. Are you using @motadata/mobile-react-native/metro config?'
                 );
             }
             return;
@@ -33,7 +33,7 @@ function loadDebugId() {
     } catch (error) {
         if (shouldWarn) {
             console.warn(
-                '[Datadog SDK] Error while retrieving Debug ID. Are you using @datadog/mobile-react-native/metro config?'
+                '[Motadata SDK] Error while retrieving Debug ID. Are you using @motadata/mobile-react-native/metro config?'
             );
         }
     }

@@ -4,19 +4,19 @@
  * Copyright 2016-Present Datadog, Inc.
  */
 
-import { isDatadogCustomHeader } from '../../headers';
+import { isMotadataCustomHeader } from '../../headers';
 import {
-    DATADOG_GRAPH_QL_OPERATION_NAME_HEADER,
-    DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
-    DATADOG_GRAPH_QL_VARIABLES_HEADER
+    MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER,
+    MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
+    MOTADATA_GRAPH_QL_VARIABLES_HEADER
 } from '../graphqlHeaders';
 
 describe('GraphQL custom headers', () => {
     it.each([
-        DATADOG_GRAPH_QL_OPERATION_NAME_HEADER,
-        DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
-        DATADOG_GRAPH_QL_VARIABLES_HEADER
+        MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER,
+        MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
+        MOTADATA_GRAPH_QL_VARIABLES_HEADER
     ])('%s matches the custom header pattern', header => {
-        expect(isDatadogCustomHeader(header)).toBeTruthy();
+        expect(isMotadataCustomHeader(header)).toBeTruthy();
     });
 });

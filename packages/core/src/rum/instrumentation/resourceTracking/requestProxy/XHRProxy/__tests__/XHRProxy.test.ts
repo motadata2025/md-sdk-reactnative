@@ -9,8 +9,8 @@ import { Platform, NativeModules } from 'react-native';
 
 import { InternalLog } from '../../../../../../InternalLog';
 import { SdkVerbosity } from '../../../../../../config/types';
-import { BufferSingleton } from '../../../../../../sdk/DatadogProvider/Buffer/BufferSingleton';
-import { DdRum } from '../../../../../DdRum';
+import { BufferSingleton } from '../../../../../../sdk/MotadataProvider/Buffer/BufferSingleton';
+import { MdRum } from '../../../../../MdRum';
 import {
     setCachedSessionId,
     setCachedUserId,
@@ -38,12 +38,12 @@ import {
     TRACKED_BY_HEADER_VALUE
 } from '../../../distributedTracing/headers';
 import {
-    DATADOG_GRAPH_QL_ERROR_HEADER,
-    DATADOG_GRAPH_QL_OPERATION_NAME_HEADER,
-    DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
-    DATADOG_GRAPH_QL_VARIABLES_HEADER
+    MOTADATA_GRAPH_QL_ERROR_HEADER,
+    MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER,
+    MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
+    MOTADATA_GRAPH_QL_VARIABLES_HEADER
 } from '../../../graphql/graphqlHeaders';
-import { ResourceReporter } from '../DatadogRumResource/ResourceReporter';
+import { ResourceReporter } from '../MotadataRumResource/ResourceReporter';
 import { XHRProxy } from '../XHRProxy';
 import {
     calculateResponseSize,
@@ -57,7 +57,7 @@ const mockedInternalLog = (InternalLog as unknown) as {
 };
 jest.spyOn(global.Math, 'random');
 
-const DdNativeRum = NativeModules.DdRum;
+const MdNativeRum = NativeModules.MdRum;
 
 function randomInt(max: number): number {
     return Math.floor(Math.random() * max);
@@ -72,8 +72,8 @@ const hexToDecimal = (hex: string): string => {
 };
 
 beforeEach(() => {
-    DdNativeRum.startResource.mockClear();
-    DdNativeRum.stopResource.mockClear();
+    MdNativeRum.startResource.mockClear();
+    MdNativeRum.stopResource.mockClear();
     BufferSingleton.onInitialization();
 
     xhrProxy = new XHRProxy({
@@ -99,7 +99,7 @@ afterEach(() => {
     xhrProxy.onTrackingStop();
     (Date.now as jest.MockedFunction<typeof Date.now>).mockClear();
     jest.spyOn(global.Math, 'random').mockRestore();
-    DdRum.unregisterResourceEventMapper();
+    MdRum.unregisterResourceEventMapper();
 
     setCachedSessionId(undefined as any);
     setCachedUserId(undefined as any);
@@ -126,17 +126,17 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            expect(DdNativeRum.startResource.mock.calls.length).toBe(1);
-            expect(DdNativeRum.startResource.mock.calls[0][1]).toBe(method);
-            expect(DdNativeRum.startResource.mock.calls[0][2]).toBe(url);
+            expect(MdNativeRum.startResource.mock.calls.length).toBe(1);
+            expect(MdNativeRum.startResource.mock.calls[0][1]).toBe(method);
+            expect(MdNativeRum.startResource.mock.calls[0][2]).toBe(url);
 
-            expect(DdNativeRum.stopResource.mock.calls.length).toBe(1);
-            expect(DdNativeRum.stopResource.mock.calls[0][0]).toBe(
-                DdNativeRum.startResource.mock.calls[0][0]
+            expect(MdNativeRum.stopResource.mock.calls.length).toBe(1);
+            expect(MdNativeRum.stopResource.mock.calls[0][0]).toBe(
+                MdNativeRum.startResource.mock.calls[0][0]
             );
-            expect(DdNativeRum.stopResource.mock.calls[0][1]).toBe(200);
-            expect(DdNativeRum.stopResource.mock.calls[0][2]).toBe('xhr');
-            expect(DdNativeRum.stopResource.mock.calls[0][3]).toBeGreaterThan(
+            expect(MdNativeRum.stopResource.mock.calls[0][1]).toBe(200);
+            expect(MdNativeRum.stopResource.mock.calls[0][2]).toBe('xhr');
+            expect(MdNativeRum.stopResource.mock.calls[0][3]).toBeGreaterThan(
                 0
             );
 
@@ -163,17 +163,17 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            expect(DdNativeRum.startResource.mock.calls.length).toBe(1);
-            expect(DdNativeRum.startResource.mock.calls[0][1]).toBe(method);
-            expect(DdNativeRum.startResource.mock.calls[0][2]).toBe(url);
+            expect(MdNativeRum.startResource.mock.calls.length).toBe(1);
+            expect(MdNativeRum.startResource.mock.calls[0][1]).toBe(method);
+            expect(MdNativeRum.startResource.mock.calls[0][2]).toBe(url);
 
-            expect(DdNativeRum.stopResource.mock.calls.length).toBe(1);
-            expect(DdNativeRum.stopResource.mock.calls[0][0]).toBe(
-                DdNativeRum.startResource.mock.calls[0][0]
+            expect(MdNativeRum.stopResource.mock.calls.length).toBe(1);
+            expect(MdNativeRum.stopResource.mock.calls[0][0]).toBe(
+                MdNativeRum.startResource.mock.calls[0][0]
             );
-            expect(DdNativeRum.stopResource.mock.calls[0][1]).toBe(500);
-            expect(DdNativeRum.stopResource.mock.calls[0][2]).toBe('xhr');
-            expect(DdNativeRum.stopResource.mock.calls[0][3]).toBeGreaterThan(
+            expect(MdNativeRum.stopResource.mock.calls[0][1]).toBe(500);
+            expect(MdNativeRum.stopResource.mock.calls[0][2]).toBe('xhr');
+            expect(MdNativeRum.stopResource.mock.calls[0][3]).toBeGreaterThan(
                 0
             );
 
@@ -200,17 +200,17 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            expect(DdNativeRum.startResource.mock.calls.length).toBe(1);
-            expect(DdNativeRum.startResource.mock.calls[0][1]).toBe(method);
-            expect(DdNativeRum.startResource.mock.calls[0][2]).toBe(url);
+            expect(MdNativeRum.startResource.mock.calls.length).toBe(1);
+            expect(MdNativeRum.startResource.mock.calls[0][1]).toBe(method);
+            expect(MdNativeRum.startResource.mock.calls[0][2]).toBe(url);
 
-            expect(DdNativeRum.stopResource.mock.calls.length).toBe(1);
-            expect(DdNativeRum.stopResource.mock.calls[0][0]).toBe(
-                DdNativeRum.startResource.mock.calls[0][0]
+            expect(MdNativeRum.stopResource.mock.calls.length).toBe(1);
+            expect(MdNativeRum.stopResource.mock.calls[0][0]).toBe(
+                MdNativeRum.startResource.mock.calls[0][0]
             );
-            expect(DdNativeRum.stopResource.mock.calls[0][1]).toBe(0);
-            expect(DdNativeRum.stopResource.mock.calls[0][2]).toBe('xhr');
-            expect(DdNativeRum.stopResource.mock.calls[0][3]).toBe(-1);
+            expect(MdNativeRum.stopResource.mock.calls[0][1]).toBe(0);
+            expect(MdNativeRum.stopResource.mock.calls[0][2]).toBe('xhr');
+            expect(MdNativeRum.stopResource.mock.calls[0][3]).toBe(-1);
 
             expect(xhr.originalOpenCalled).toBe(true);
             expect(xhr.originalSendCalled).toBe(true);
@@ -228,7 +228,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'api.example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     }
                 ])
             });
@@ -290,11 +290,11 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'google.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     },
                     {
                         match: 'api.example.co',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     }
                 ])
             });
@@ -323,7 +323,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     }
                 ])
             });
@@ -352,7 +352,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'api.example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     }
                 ])
             });
@@ -408,7 +408,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'api.example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     }
                 ])
             });
@@ -436,7 +436,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'api.example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     }
                 ])
             });
@@ -462,7 +462,7 @@ describe('XHRProxy', () => {
             const firstPartyHostsRegexMap = firstPartyHostsRegexMapBuilder([
                 {
                     match: 'api.example.com',
-                    propagatorTypes: [PropagatorType.DATADOG]
+                    propagatorTypes: [PropagatorType.MOTADATA]
                 }
             ]);
             xhrProxy.onTrackingStart({
@@ -516,7 +516,7 @@ describe('XHRProxy', () => {
             ).toBeUndefined();
         });
 
-        it('adds the x-datadog-tracked-by header for first party host requests', async () => {
+        it('adds the x-motadata-tracked-by header for first party host requests', async () => {
             // GIVEN
             const method = 'GET';
             const url = 'https://api.example.com/v2/user';
@@ -525,7 +525,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'api.example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     }
                 ])
             });
@@ -544,7 +544,7 @@ describe('XHRProxy', () => {
             );
         });
 
-        it('adds the x-datadog-tracked-by header for non-first party host requests', async () => {
+        it('adds the x-motadata-tracked-by header for non-first party host requests', async () => {
             // GIVEN
             const method = 'GET';
             const url = 'https://api.example.com/v2/user';
@@ -576,7 +576,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'something.fr',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     },
                     {
                         match: 'example.com',
@@ -616,7 +616,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     },
                     {
                         match: 'example.com',
@@ -662,28 +662,28 @@ describe('XHRProxy', () => {
             );
 
             /* =========================================================================
-             *  Verify that the trace id in the x-datadog-trace-id is a 64 bit decimal.
+             *  Verify that the trace id in the x-motadata-trace-id is a 64 bit decimal.
              * ========================================================================= */
 
-            // x-datadog-trace-id is a decimal representing the low 64 bits of the 128 bits Trace ID
-            const xDatadogTraceId = xhr.requestHeaders.get(TRACE_ID_HEADER_KEY);
+            // x-motadata-trace-id is a decimal representing the low 64 bits of the 128 bits Trace ID
+            const xMotadataTraceId = xhr.requestHeaders.get(TRACE_ID_HEADER_KEY);
 
             expect(
-                TracingIdentifierUtils.isWithin64Bits(xDatadogTraceId as string)
+                TracingIdentifierUtils.isWithin64Bits(xMotadataTraceId as string)
             );
 
             /* ===============================================================
-             *  Verify that the trace id in x-datadog-tags headers is HEX 16.
+             *  Verify that the trace id in x-motadata-tags headers is HEX 16.
              * =============================================================== */
 
-            // x-datadog-tags is a HEX 16 contains the high 64 bits of the 128 bits Trace ID
-            const xDatadogTagsTraceId = xhr.requestHeaders
+            // x-motadata-tags is a HEX 16 contains the high 64 bits of the 128 bits Trace ID
+            const xMotadataTagsTraceId = xhr.requestHeaders
                 ?.get(TAGS_HEADER_KEY)
                 ?.split('=')[1] as string;
 
-            expect(xDatadogTagsTraceId).toMatch(/^[a-f0-9]{16}$/);
+            expect(xMotadataTagsTraceId).toMatch(/^[a-f0-9]{16}$/);
             expect(
-                TracingIdentifierUtils.isWithin64Bits(xDatadogTagsTraceId, 16)
+                TracingIdentifierUtils.isWithin64Bits(xMotadataTagsTraceId, 16)
             );
 
             /* =========================================================================
@@ -717,7 +717,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     },
                     {
                         match: 'example.com',
@@ -744,32 +744,32 @@ describe('XHRProxy', () => {
 
             // THEN
 
-            // x-datadog-trace-id is just the low 64 bits (DECIMAL)
-            const datadogLowTraceValue = xhr.requestHeaders.get(
+            // x-motadata-trace-id is just the low 64 bits (DECIMAL)
+            const motadataLowTraceValue = xhr.requestHeaders.get(
                 TRACE_ID_HEADER_KEY
             );
 
             // We convert the low 64 bits to HEX
-            const datadogLowTraceValueHex = `${BigInt(
-                datadogLowTraceValue as string
+            const motadataLowTraceValueHex = `${BigInt(
+                motadataLowTraceValue as string
             )
                 .toString(16)
                 .padStart(16, '0')}`;
 
-            // The high 64 bits are expressed in x-datadog-tags (HEX)
-            const datadogHighTraceValueHex = xhr.requestHeaders
+            // The high 64 bits are expressed in x-motadata-tags (HEX)
+            const motadataHighTraceValueHex = xhr.requestHeaders
                 ?.get(TAGS_HEADER_KEY)
                 ?.split('=')[1] as string; // High HEX 64 bits
 
             // We re-compose the full 128 bit trace-id by joining the strings
-            const datadogTraceValue128BitHex = `${datadogHighTraceValueHex}${datadogLowTraceValueHex}`;
+            const motadataTraceValue128BitHex = `${motadataHighTraceValueHex}${motadataLowTraceValueHex}`;
 
             // We then get the decimal value of the trace-id
-            const datadogTraceValue128BitDec = hexToDecimal(
-                datadogTraceValue128BitHex
+            const motadataTraceValue128BitDec = hexToDecimal(
+                motadataTraceValue128BitHex
             );
 
-            const datadogParentValue = xhr.requestHeaders.get(
+            const motadataParentValue = xhr.requestHeaders.get(
                 PARENT_ID_HEADER_KEY
             );
             const contextHeader = xhr.requestHeaders.get(
@@ -789,17 +789,17 @@ describe('XHRProxy', () => {
             const parentB3Value = b3Header?.split('-')[1] as string;
 
             expect(hexToDecimal(traceContextValue)).toBe(
-                datadogTraceValue128BitDec
+                motadataTraceValue128BitDec
             );
-            expect(hexToDecimal(parentContextValue)).toBe(datadogParentValue);
+            expect(hexToDecimal(parentContextValue)).toBe(motadataParentValue);
             //
             expect(hexToDecimal(b3MultiTraceHeader)).toBe(
-                datadogTraceValue128BitDec
+                motadataTraceValue128BitDec
             );
-            expect(hexToDecimal(b3MultiParentHeader)).toBe(datadogParentValue);
+            expect(hexToDecimal(b3MultiParentHeader)).toBe(motadataParentValue);
 
-            expect(hexToDecimal(traceB3Value)).toBe(datadogTraceValue128BitDec);
-            expect(hexToDecimal(parentB3Value)).toBe(datadogParentValue);
+            expect(hexToDecimal(traceB3Value)).toBe(motadataTraceValue128BitDec);
+            expect(hexToDecimal(parentB3Value)).toBe(motadataParentValue);
         });
 
         it('adds tracecontext request headers when the host is instrumented with tracecontext and request is sampled', async () => {
@@ -811,7 +811,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'something.fr',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     },
                     {
                         match: 'example.com',
@@ -848,7 +848,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'something.fr',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     },
                     {
                         match: 'example.com',
@@ -882,7 +882,7 @@ describe('XHRProxy', () => {
                     {
                         match: 'api.example.com',
                         propagatorTypes: [
-                            PropagatorType.DATADOG,
+                            PropagatorType.MOTADATA,
                             PropagatorType.TRACECONTEXT
                         ]
                     },
@@ -940,7 +940,7 @@ describe('XHRProxy', () => {
                     {
                         match: 'api.example.com',
                         propagatorTypes: [
-                            PropagatorType.DATADOG,
+                            PropagatorType.MOTADATA,
                             PropagatorType.TRACECONTEXT
                         ]
                     },
@@ -983,7 +983,7 @@ describe('XHRProxy', () => {
                     {
                         match: 'api.example.com',
                         propagatorTypes: [
-                            PropagatorType.DATADOG,
+                            PropagatorType.MOTADATA,
                             PropagatorType.TRACECONTEXT
                         ]
                     },
@@ -1011,7 +1011,7 @@ describe('XHRProxy', () => {
             expect(xhr.requestHeaders.get(BAGGAGE_HEADER_KEY)).toBeUndefined();
         });
 
-        it('does not add rum session id to baggage headers when propagator type is not datadog or w3c', async () => {
+        it('does not add rum session id to baggage headers when propagator type is not motadata or w3c', async () => {
             // GIVEN
             const method = 'GET';
             const url = 'https://example.com';
@@ -1021,12 +1021,12 @@ describe('XHRProxy', () => {
                     {
                         match: 'api.example.com',
                         propagatorTypes: [
-                            PropagatorType.DATADOG,
+                            PropagatorType.MOTADATA,
                             PropagatorType.TRACECONTEXT
                         ]
                     },
                     {
-                        match: 'example.com', // <-- no datadog or tracecontext here
+                        match: 'example.com', // <-- no motadata or tracecontext here
                         propagatorTypes: [
                             PropagatorType.B3,
                             PropagatorType.B3MULTI
@@ -1059,7 +1059,7 @@ describe('XHRProxy', () => {
                     {
                         match: 'api.example.com',
                         propagatorTypes: [
-                            PropagatorType.DATADOG,
+                            PropagatorType.MOTADATA,
                             PropagatorType.TRACECONTEXT
                         ]
                     },
@@ -1102,7 +1102,7 @@ describe('XHRProxy', () => {
         });
     });
 
-    describe('DdRum.startResource calls', () => {
+    describe('MdRum.startResource calls', () => {
         it('adds the span id, trace id and rule_psr as resource attributes when startTracking() + XHR.open() + XHR.send()', async () => {
             // GIVEN
             const method = 'GET';
@@ -1112,7 +1112,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'api.example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     }
                 ])
             });
@@ -1127,17 +1127,17 @@ describe('XHRProxy', () => {
 
             // THEN
             const spanId =
-                DdNativeRum.startResource.mock.calls[0][3]['_dd.span_id'];
+                MdNativeRum.startResource.mock.calls[0][3]['_dd.span_id'];
             expect(spanId).toBeDefined();
             expect(spanId).toMatch(/[1-9].+/);
 
             const traceId =
-                DdNativeRum.startResource.mock.calls[0][3]['_dd.trace_id'];
+                MdNativeRum.startResource.mock.calls[0][3]['_dd.trace_id'];
             expect(traceId).toBeDefined();
             expect(traceId).toMatch(/[1-9].+/);
 
             const rulePsr =
-                DdNativeRum.startResource.mock.calls[0][3]['_dd.rule_psr'];
+                MdNativeRum.startResource.mock.calls[0][3]['_dd.rule_psr'];
             expect(rulePsr).toBe(1);
 
             // Check traceId and spanId are different
@@ -1162,7 +1162,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            expect(DdNativeRum.startResource).not.toHaveBeenCalledWith(
+            expect(MdNativeRum.startResource).not.toHaveBeenCalledWith(
                 expect.anything(),
                 expect.anything(),
                 expect.anything(),
@@ -1173,7 +1173,7 @@ describe('XHRProxy', () => {
                 }),
                 expect.anything()
             );
-            expect(DdNativeRum.startResource.mock.calls[0][3]).toStrictEqual(
+            expect(MdNativeRum.startResource.mock.calls[0][3]).toStrictEqual(
                 {}
             );
         });
@@ -1187,7 +1187,7 @@ describe('XHRProxy', () => {
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([
                     {
                         match: 'api.example.com',
-                        propagatorTypes: [PropagatorType.DATADOG]
+                        propagatorTypes: [PropagatorType.MOTADATA]
                     }
                 ])
             });
@@ -1202,7 +1202,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            expect(DdNativeRum.startResource).not.toHaveBeenCalledWith(
+            expect(MdNativeRum.startResource).not.toHaveBeenCalledWith(
                 expect.anything(),
                 expect.anything(),
                 expect.anything(),
@@ -1213,7 +1213,7 @@ describe('XHRProxy', () => {
                 }),
                 expect.anything()
             );
-            expect(DdNativeRum.startResource.mock.calls[0][3]).toStrictEqual(
+            expect(MdNativeRum.startResource.mock.calls[0][3]).toStrictEqual(
                 {}
             );
         });
@@ -1244,7 +1244,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const timings = DdNativeRum.stopResource.mock.calls[0][4];
+            const timings = MdNativeRum.stopResource.mock.calls[0][4];
             const resourceTimings = timings['_dd.resource_timings'];
 
             expect(resourceTimings).toBeDefined();
@@ -1293,7 +1293,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const timings = DdNativeRum.stopResource.mock.calls[0][4];
+            const timings = MdNativeRum.stopResource.mock.calls[0][4];
             const resourceTimings = timings['_dd.resource_timings'];
 
             expect(resourceTimings).toBeDefined();
@@ -1317,7 +1317,7 @@ describe('XHRProxy', () => {
         });
     });
 
-    describe('DdRum.stopResource calls', () => {
+    describe('MdRum.stopResource calls', () => {
         it('does not generate resource timings when startTracking() + XHR.open() + XHR.send() + XHR.abort() before load started', async () => {
             // GIVEN
             const method = 'GET';
@@ -1336,7 +1336,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
 
             expect(attributes['_dd.resource_timings']).toBeUndefined();
         });
@@ -1349,7 +1349,7 @@ describe('XHRProxy', () => {
                 tracingSamplingRate: 100,
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([])
             });
-            DdRum.registerResourceEventMapper(event => {
+            MdRum.registerResourceEventMapper(event => {
                 (event.context as any)['body'] = JSON.parse(
                     event.resourceContext?.response
                 );
@@ -1365,7 +1365,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
 
             expect(attributes['body.body']).toEqual('content');
         });
@@ -1598,33 +1598,33 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_NAME_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER,
                 'cats'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_VARIABLES_HEADER, '{}');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_VARIABLES_HEADER, '{}');
             xhr.send();
             xhr.abort();
             xhr.complete(0, undefined);
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.operation_type']).toEqual('query');
             expect(attributes['_dd.graphql.operation_name']).toEqual('cats');
             expect(attributes['_dd.graphql.variables']).toEqual('{}');
 
             expect(
-                xhr.requestHeaders.get(DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER)
+                xhr.requestHeaders.get(MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER)
             ).not.toBeDefined();
             expect(
-                xhr.requestHeaders.get(DATADOG_GRAPH_QL_OPERATION_NAME_HEADER)
+                xhr.requestHeaders.get(MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER)
             ).not.toBeDefined();
             expect(
-                xhr.requestHeaders.get(DATADOG_GRAPH_QL_VARIABLES_HEADER)
+                xhr.requestHeaders.get(MOTADATA_GRAPH_QL_VARIABLES_HEADER)
             ).not.toBeDefined();
         });
 
@@ -1641,7 +1641,7 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
             xhr.send();
@@ -1650,19 +1650,19 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.operation_type']).toEqual('query');
             expect(attributes['_dd.graphql.operation_name']).not.toBeDefined();
             expect(attributes['_dd.graphql.variables']).not.toBeDefined();
 
             expect(
-                xhr.requestHeaders.get(DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER)
+                xhr.requestHeaders.get(MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER)
             ).not.toBeDefined();
             expect(
-                xhr.requestHeaders.get(DATADOG_GRAPH_QL_OPERATION_NAME_HEADER)
+                xhr.requestHeaders.get(MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER)
             ).not.toBeDefined();
             expect(
-                xhr.requestHeaders.get(DATADOG_GRAPH_QL_VARIABLES_HEADER)
+                xhr.requestHeaders.get(MOTADATA_GRAPH_QL_VARIABLES_HEADER)
             ).not.toBeDefined();
         });
 
@@ -1679,29 +1679,29 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_NAME_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER,
                 'cats'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_VARIABLES_HEADER, '{}');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_VARIABLES_HEADER, '{}');
             xhr.send();
             xhr.abort();
             xhr.complete(0, undefined);
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.operation_type']).not.toBeDefined();
             expect(attributes['_dd.graphql.operation_name']).not.toBeDefined();
             expect(attributes['_dd.graphql.variables']).not.toBeDefined();
 
             expect(
-                xhr.requestHeaders.get(DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER)
+                xhr.requestHeaders.get(MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER)
             ).not.toBeDefined();
             expect(
-                xhr.requestHeaders.get(DATADOG_GRAPH_QL_OPERATION_NAME_HEADER)
+                xhr.requestHeaders.get(MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER)
             ).not.toBeDefined();
             expect(
-                xhr.requestHeaders.get(DATADOG_GRAPH_QL_VARIABLES_HEADER)
+                xhr.requestHeaders.get(MOTADATA_GRAPH_QL_VARIABLES_HEADER)
             ).not.toBeDefined();
         });
 
@@ -1713,7 +1713,7 @@ describe('XHRProxy', () => {
                 tracingSamplingRate: 100,
                 firstPartyHostsRegexMap: firstPartyHostsRegexMapBuilder([])
             });
-            DdRum.registerResourceEventMapper(event => {
+            MdRum.registerResourceEventMapper(event => {
                 if ((event.context as any)['_dd.graphql.variables']) {
                     const variables = JSON.parse(
                         (event.context as any)['_dd.graphql.variables']
@@ -1733,11 +1733,11 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_VARIABLES_HEADER,
+                MOTADATA_GRAPH_QL_VARIABLES_HEADER,
                 JSON.stringify({ password: 'SECRET' })
             );
             xhr.send();
@@ -1746,7 +1746,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.operation_type']).toBe('query');
             expect(attributes['_dd.graphql.operation_name']).not.toBeDefined();
             expect(attributes['_dd.graphql.variables']).toBe(
@@ -1786,14 +1786,14 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_NAME_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER,
                 'GetUser'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -1801,7 +1801,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.operation_type']).toEqual('query');
             expect(attributes['_dd.graphql.operation_name']).toEqual('GetUser');
             expect(attributes['_dd.graphql.errors']).toBeDefined();
@@ -1844,10 +1844,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -1855,7 +1855,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
 
             const errors = JSON.parse(attributes['_dd.graphql.errors']);
             expect(errors[0]).toEqual({
@@ -1893,10 +1893,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -1904,7 +1904,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
 
             const errors = JSON.parse(attributes['_dd.graphql.errors']);
             expect(errors).toHaveLength(2);
@@ -1942,10 +1942,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'mutation'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -1953,7 +1953,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
 
             const errors = JSON.parse(attributes['_dd.graphql.errors']);
             expect(errors[0]).toEqual({
@@ -1978,7 +1978,7 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             // Note: No GraphQL operation type header
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(response);
@@ -1986,7 +1986,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.errors']).toBeUndefined();
         });
 
@@ -2013,10 +2013,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'false'); // Explicitly disabled
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'false'); // Explicitly disabled
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -2024,7 +2024,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN - errors should NOT be extracted
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.errors']).toBeUndefined();
             // But other GraphQL attributes should still be set
             expect(attributes['_dd.graphql.operation_type']).toEqual('query');
@@ -2053,10 +2053,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
-            // Note: No DATADOG_GRAPH_QL_ERROR_HEADER set
+            // Note: No MOTADATA_GRAPH_QL_ERROR_HEADER set
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -2064,7 +2064,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN - errors should NOT be extracted
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.errors']).toBeUndefined();
             // But other GraphQL attributes should still be set
             expect(attributes['_dd.graphql.operation_type']).toEqual('query');
@@ -2085,10 +2085,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = invalidJson;
@@ -2096,7 +2096,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN - should not crash and should not set errors attribute
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.errors']).toBeUndefined();
         });
 
@@ -2118,10 +2118,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -2129,7 +2129,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN - empty array should not set errors attribute
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.errors']).toBeUndefined();
         });
 
@@ -2150,10 +2150,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -2161,7 +2161,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             expect(attributes['_dd.graphql.errors']).toBeUndefined();
         });
 
@@ -2191,10 +2191,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -2202,7 +2202,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
 
             const errors = JSON.parse(attributes['_dd.graphql.errors']);
             expect(errors[0].code).toEqual('EXTENSIONS_CODE');
@@ -2231,10 +2231,10 @@ describe('XHRProxy', () => {
             const xhr = new XMLHttpRequestMock();
             xhr.open(method, url);
             xhr.setRequestHeader(
-                DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                 'query'
             );
-            xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+            xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
             xhr.send();
             xhr.notifyResponseArrived();
             xhr.responseText = JSON.stringify(graphqlResponse);
@@ -2242,7 +2242,7 @@ describe('XHRProxy', () => {
             await flushPromises();
 
             // THEN
-            const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+            const attributes = MdNativeRum.stopResource.mock.calls[0][4];
             const errors = JSON.parse(attributes['_dd.graphql.errors']);
             expect(errors[0].path).toEqual(['items', 0, 'name', 'first']);
         });
@@ -2274,10 +2274,10 @@ describe('XHRProxy', () => {
 
                 xhr.open(method, url);
                 xhr.setRequestHeader(
-                    DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                    MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                     'query'
                 );
-                xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+                xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
 
                 // Simulate application reading response in onreadystatechange
                 const originalOnReadyStateChange = xhr.onreadystatechange;
@@ -2301,8 +2301,8 @@ describe('XHRProxy', () => {
                 expect(parsedByApp.errors).toHaveLength(1);
                 expect(parsedByApp.errors[0].message).toBe('User not found');
 
-                // AND - Datadog successfully extracted filtered errors
-                const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+                // AND - Motadata successfully extracted filtered errors
+                const attributes = MdNativeRum.stopResource.mock.calls[0][4];
                 const errors = JSON.parse(attributes['_dd.graphql.errors']);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).toEqual({
@@ -2337,11 +2337,11 @@ describe('XHRProxy', () => {
 
                 xhr.open(method, url);
                 xhr.setRequestHeader(
-                    DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                    MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                     'mutation'
                 );
 
-                xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+                xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
 
                 // Simulate application reading response in onreadystatechange
                 const originalOnReadyStateChange = xhr.onreadystatechange;
@@ -2368,8 +2368,8 @@ describe('XHRProxy', () => {
                     'FORBIDDEN'
                 );
 
-                // AND - Datadog successfully extracted filtered errors (extensions filtered out)
-                const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+                // AND - Motadata successfully extracted filtered errors (extensions filtered out)
+                const attributes = MdNativeRum.stopResource.mock.calls[0][4];
                 const errors = JSON.parse(attributes['_dd.graphql.errors']);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).toEqual({
@@ -2413,11 +2413,11 @@ describe('XHRProxy', () => {
 
                 xhr.open(method, url);
                 xhr.setRequestHeader(
-                    DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                    MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                     'query'
                 );
 
-                xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+                xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
 
                 // Simulate application reading response in onreadystatechange
                 const originalOnReadyStateChange = xhr.onreadystatechange;
@@ -2439,8 +2439,8 @@ describe('XHRProxy', () => {
                 expect(applicationReadBlob._data).toBe(responseBody);
                 expect(applicationReadBlob.size).toBe(responseBody.length);
 
-                // AND - Datadog successfully extracted filtered errors
-                const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+                // AND - Motadata successfully extracted filtered errors
+                const attributes = MdNativeRum.stopResource.mock.calls[0][4];
                 const errors = JSON.parse(attributes['_dd.graphql.errors']);
                 expect(errors).toHaveLength(1);
                 expect(errors[0]).toEqual({
@@ -2488,11 +2488,11 @@ describe('XHRProxy', () => {
 
                 xhr.open(method, url);
                 xhr.setRequestHeader(
-                    DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
+                    MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
                     'query'
                 );
 
-                xhr.setRequestHeader(DATADOG_GRAPH_QL_ERROR_HEADER, 'true');
+                xhr.setRequestHeader(MOTADATA_GRAPH_QL_ERROR_HEADER, 'true');
 
                 // Simulate application reading response
                 const originalOnReadyStateChange = xhr.onreadystatechange;
@@ -2520,8 +2520,8 @@ describe('XHRProxy', () => {
                     '...'
                 ]);
 
-                // AND - Datadog got filtered errors (no extensions details)
-                const attributes = DdNativeRum.stopResource.mock.calls[0][4];
+                // AND - Motadata got filtered errors (no extensions details)
+                const attributes = MdNativeRum.stopResource.mock.calls[0][4];
                 const errors = JSON.parse(attributes['_dd.graphql.errors']);
                 expect(errors).toHaveLength(2);
                 expect(errors[0]).toEqual({

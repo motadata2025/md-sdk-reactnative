@@ -1,34 +1,29 @@
 {
-  "name": "dd-sdk-reactnative",
-  "description": "A client-side React Native module to interact with Datadog",
+  "name": "md-sdk-reactnative",
+  "description": "A client-side React Native module to interact with Motadata",
   "keywords": [
-    "datadog",
+    "motadata",
+    "rum",
     "react-native",
-    "ios",
     "android"
   ],
-  "author": "Datadog (https://github.com/DataDog)",
-  "homepage": "https://github.com/DataDog/dd-sdk-reactnative#readme",
-  "repository": "https://github.com/DataDog/dd-sdk-reactnative",
+  "author": "Motadata",
+  "homepage": "https://github.com/motadata2025/md-sdk-reactnative#readme",
+  "repository": "https://github.com/motadata2025/md-sdk-reactnative",
   "bugs": {
-    "url": "https://github.com/DataDog/dd-sdk-reactnative/issues"
+    "url": "https://github.com/motadata2025/md-sdk-reactnative/issues"
   },
   "license": "Apache-2.0",
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/*",
-      "example",
-      "example-new-architecture",
-      "benchmarks"
+      "packages/core"
     ]
   },
   "scripts": {
     "prepare": "genversion --es6 --semi packages/core/src/version.ts && lerna run prepare",
     "test": "genversion --es6 --semi packages/core/src/version.ts && jest",
-    "lint": "genversion --es6 --semi packages/core/src/version.ts && eslint .",
-    "example": "yarn --cwd example",
-    "postinstall": "./packages/react-navigation/fix-react-navigation-import-in-dependencies.sh"
+    "lint": "genversion --es6 --semi packages/core/src/version.ts && eslint ."
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -46,7 +41,6 @@
     "@types/react-test-renderer": "18.0.0",
     "@typescript-eslint/eslint-plugin": "5.61.0",
     "@typescript-eslint/parser": "5.61.0",
-    "dd-trace": "^5.28.0",
     "eslint": "^8.19.0",
     "eslint-config-prettier": "6.0.0",
     "eslint-plugin-arca": "0.15.0",
@@ -65,7 +59,6 @@
     "react-native": "0.76.9",
     "react-native-builder-bob": "0.26.0",
     "react-native-gradle-plugin": "^0.71.19",
-    "react-native-webview": "13.12.2",
     "react-test-renderer": "18.3.1",
     "typescript": "5.0.4"
   },
@@ -78,7 +71,7 @@
   },
   "jest": {
     "projects": [
-      "<rootDir>/packages/*"
+      "<rootDir>/packages/core"
     ]
   },
   "packageManager": "yarn@3.4.1",

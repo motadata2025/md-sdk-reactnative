@@ -8,21 +8,21 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const React = require('react');
 
-const actualDatadog = jest.requireActual('@datadog/mobile-react-native');
+const actualMotadata = jest.requireActual('@motadata/mobile-react-native');
 
 /**
  * Explicitly mocking the provider prevents auto-instrumentation in tests.
  * This prevents errors in tests to be logged in the console, as well as needing
  * to mock XMLHttpRequest.
  */
-const DatadogProviderMock = ({ children }) => {
+const MotadataProviderMock = ({ children }) => {
     return <>{children}</>;
 };
-DatadogProviderMock.initialize = jest.fn().mockResolvedValue();
+MotadataProviderMock.initialize = jest.fn().mockResolvedValue();
 
 module.exports = {
-    ...actualDatadog,
-    DdSdkReactNative: {
+    ...actualMotadata,
+    MdSdkReactNative: {
         initialize: jest
             .fn()
             .mockImplementation(() => new Promise(resolve => resolve())),
@@ -74,22 +74,7 @@ module.exports = {
             .mockImplementation(() => new Promise(resolve => resolve()))
     },
 
-    DdLogs: {
-        debug: jest
-            .fn()
-            .mockImplementation(() => new Promise(resolve => resolve())),
-        info: jest
-            .fn()
-            .mockImplementation(() => new Promise(resolve => resolve())),
-        warn: jest
-            .fn()
-            .mockImplementation(() => new Promise(resolve => resolve())),
-        error: jest
-            .fn()
-            .mockImplementation(() => new Promise(resolve => resolve()))
-    },
-
-    DdTrace: {
+    MdTrace: {
         startSpan: jest
             .fn()
             .mockImplementation(
@@ -100,7 +85,7 @@ module.exports = {
             .mockImplementation(() => new Promise(resolve => resolve()))
     },
 
-    DdRum: {
+    MdRum: {
         startView: jest
             .fn()
             .mockImplementation(() => new Promise(resolve => resolve())),
@@ -170,8 +155,8 @@ module.exports = {
         generateTraceId: jest.fn().mockReturnValue('mock-trace-id'),
         generateSpanId: jest.fn().mockReturnValue('mock-span-id')
     },
-    DatadogProvider: DatadogProviderMock,
-    DdSdk: {
+    MotadataProvider: MotadataProviderMock,
+    MdSdk: {
         initialize: jest
             .fn()
             .mockImplementation(() => new Promise(resolve => resolve()))

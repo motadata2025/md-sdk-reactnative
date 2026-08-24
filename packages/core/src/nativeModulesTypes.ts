@@ -4,12 +4,10 @@
  * Copyright 2016-Present Datadog, Inc.
  */
 
-import type { DdSdkNativeConfiguration } from './config/features/CoreConfigurationNative';
-import type { Spec as NativeDdFlags } from './specs/NativeDdFlags';
-import type { Spec as NativeDdLogs } from './specs/NativeDdLogs';
-import type { Spec as NativeDdRum } from './specs/NativeDdRum';
-import type { Spec as NativeDdSdk } from './specs/NativeDdSdk';
-import type { Spec as NativeDdTrace } from './specs/NativeDdTrace';
+import type { MdSdkNativeConfiguration } from './config/features/CoreConfigurationNative';
+import type { Spec as NativeMdRum } from './specs/NativeMdRum';
+import type { Spec as NativeMdSdk } from './specs/NativeMdSdk';
+import type { Spec as NativeMdTrace } from './specs/NativeMdTrace';
 
 /**
  * In this file, native modules types extend the specs for TurboModules.
@@ -17,29 +15,19 @@ import type { Spec as NativeDdTrace } from './specs/NativeDdTrace';
  */
 
 /**
- * The entry point to use Datadog's Logs feature.
+ * The entry point to use Motadata's Trace feature.
  */
-export type DdNativeLogsType = NativeDdLogs;
+export type MdNativeTraceType = NativeMdTrace;
 
 /**
- * The entry point to use Datadog's Trace feature.
+ * The entry point to initialize Motadata's features.
  */
-export type DdNativeTraceType = NativeDdTrace;
-
-/**
- * The entry point to use Datadog's Flags feature.
- */
-export type DdNativeFlagsType = NativeDdFlags;
-
-/**
- * The entry point to initialize Datadog's features.
- */
-export interface DdNativeSdkType extends NativeDdSdk {
+export interface MdNativeSdkType extends NativeMdSdk {
     /**
-     * Initializes Datadog's features.
+     * Initializes Motadata's features.
      * @param configuration: The configuration to use.
      */
-    initialize(configuration: DdSdkNativeConfiguration): Promise<void>;
+    initialize(configuration: MdSdkNativeConfiguration): Promise<void>;
 }
 
 type ActionType = 'TAP' | 'SCROLL' | 'SWIPE' | 'BACK' | 'CUSTOM';
@@ -60,9 +48,9 @@ type ResourceKind =
 type ErrorSource = 'NETWORK' | 'SOURCE' | 'CONSOLE' | 'WEBVIEW' | 'CUSTOM';
 
 /**
- * The entry point to use Datadog's RUM feature.
+ * The entry point to use Motadata's RUM feature.
  */
-export interface DdNativeRumType extends NativeDdRum {
+export interface MdNativeRumType extends NativeMdRum {
     /**
      * Start tracking a RUM Action.
      * @param type: The action type (tap, scroll, swipe, back, custom).

@@ -7,12 +7,12 @@ import type { PropagatorType } from '../../../types';
 import type { RegexMap } from '../requestProxy/interfaces/RequestProxy';
 
 import { TracingIdentifier } from './TracingIdentifier';
-import type { DdRumResourceTracingAttributes } from './distributedTracingAttributes';
+import type { MdRumResourceTracingAttributes } from './distributedTracingAttributes';
 import { DistributedTracingSampling } from './distributedTracingSampling';
 import type { Hostname } from './firstPartyHosts';
 import { getPropagatorsForHost } from './firstPartyHosts';
 
-const DISCARDED_TRACE_ATTRIBUTES: DdRumResourceTracingAttributes = {
+const DISCARDED_TRACE_ATTRIBUTES: MdRumResourceTracingAttributes = {
     samplingPriorityHeader: '0',
     tracingStrategy: 'DISCARD'
 };
@@ -31,7 +31,7 @@ export const getTracingAttributes = ({
     rumSessionId?: string;
     userId?: string;
     accountId?: string;
-}): DdRumResourceTracingAttributes => {
+}): MdRumResourceTracingAttributes => {
     if (hostname === null) {
         return DISCARDED_TRACE_ATTRIBUTES;
     }
@@ -57,7 +57,7 @@ export const generateTracingAttributesWithSampling = (
     rumSessionId?: string,
     userId?: string,
     accountId?: string
-): DdRumResourceTracingAttributes => {
+): MdRumResourceTracingAttributes => {
     if (!propagatorTypes || propagatorTypes.length === 0) {
         return DISCARDED_TRACE_ATTRIBUTES;
     }
@@ -70,7 +70,7 @@ export const generateTracingAttributesWithSampling = (
         traceId
     );
 
-    const tracingAttributes: DdRumResourceTracingAttributes = {
+    const tracingAttributes: MdRumResourceTracingAttributes = {
         traceId,
         spanId: TracingIdentifier.createSpanId(),
         samplingPriorityHeader: isSampled ? '1' : '0',

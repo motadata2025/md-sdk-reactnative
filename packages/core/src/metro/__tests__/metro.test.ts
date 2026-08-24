@@ -14,7 +14,7 @@ import {
     getDebugIdFromBundleSource,
     injectDebugIdInCodeAndSourceMap
 } from '../plugin/debugIdHelper';
-import { createDatadogMetroSerializer } from '../plugin/metroSerializer';
+import { createMotadataMetroSerializer } from '../plugin/metroSerializer';
 import type { MetroSerializerOutput } from '../plugin/types/metroTypes';
 import { convertSerializerOutput } from '../plugin/utils';
 
@@ -24,16 +24,16 @@ import {
 } from './__utils__/serializerUtils';
 
 const DEBUG_ID_CODE_SNIPPET =
-    'var _datadogDebugIds,_datadogDebugIdMeta;void 0===_datadogDebugIds&&(_datadogDebugIds={});try{var stack=(new Error).stack;stack&&(_datadogDebugIds[stack]="__datadog_debug_id_placeholder__",_datadogDebugIdMeta="datadog-debug-id-__datadog_debug_id_placeholder__")}catch(e){}';
+    'var _motadataDebugIds,_motadataDebugIdMeta;void 0===_motadataDebugIds&&(_motadataDebugIds={});try{var stack=(new Error).stack;stack&&(_motadataDebugIds[stack]="__motadata_debug_id_placeholder__",_motadataDebugIdMeta="motadata-debug-id-__motadata_debug_id_placeholder__")}catch(e){}';
 
-describe('Datadog Metro Plugin', () => {
+describe('Motadata Metro Plugin', () => {
     afterEach(() => {
         jest.resetModules();
     });
 
-    describe('Datadog Metro Serializer', () => {
+    describe('Motadata Metro Serializer', () => {
         test('skips debug ID injection for web platform builds', async () => {
-            const serializer = createDatadogMetroSerializer();
+            const serializer = createMotadataMetroSerializer();
             const args = mockSerializerArgsForEmptyModule();
             // Set platform to 'web'
             (args[2] as any).transformOptions.platform = 'web';
@@ -42,17 +42,17 @@ describe('Datadog Metro Plugin', () => {
             const { code } = await convertSerializerOutput(bundle);
             // Web builds should not contain debug ID injection
             expect(code).not.toContain('debugId');
-            expect(code).not.toContain('_datadogDebugIds');
+            expect(code).not.toContain('_motadataDebugIds');
         });
 
         test('skips debug ID injection for modulesOnly bundles (lazy/split chunks)', async () => {
-            const serializer = createDatadogMetroSerializer();
+            const serializer = createMotadataMetroSerializer();
             const mainBundleArgs = mockSerializerArgsForEmptyModule();
             const mainBundle = await serializer(...mainBundleArgs);
             const { code: mainCode } = await convertSerializerOutput(
                 mainBundle
             );
-            expect(mainCode).toContain('_datadogDebugIds');
+            expect(mainCode).toContain('_motadataDebugIds');
 
             const lazyChunkArgs = mockSerializerArgsForEmptyModule();
             (lazyChunkArgs[3] as any).modulesOnly = true;
@@ -61,7 +61,7 @@ describe('Datadog Metro Plugin', () => {
                 lazyBundle
             );
             expect(lazyCode).not.toContain('debugId');
-            expect(lazyCode).not.toContain('_datadogDebugIds');
+            expect(lazyCode).not.toContain('_motadataDebugIds');
         });
 
         test('generates bundle and source map with UUID v5 Debug ID', async () => {
@@ -70,7 +70,7 @@ describe('Datadog Metro Plugin', () => {
             const expectedDebugId = createDebugIdFromString(
                 codeSnippetHash.digest('hex')
             );
-            const serializer = createDatadogMetroSerializer();
+            const serializer = createMotadataMetroSerializer();
 
             const bundle = await serializer(
                 ...mockSerializerArgsForEmptyModule()
@@ -80,7 +80,7 @@ describe('Datadog Metro Plugin', () => {
             }
 
             const expectedCode = DEBUG_ID_CODE_SNIPPET.replaceAll(
-                '__datadog_debug_id_placeholder__',
+                '__motadata_debug_id_placeholder__',
                 expectedDebugId
             );
 
@@ -88,7 +88,7 @@ describe('Datadog Metro Plugin', () => {
                 `${expectedCode}\n//# debugId=${expectedDebugId}`
             );
 
-            const expectedMap = `{"version":3,"sources":["__datadog_debugid__"],"sourcesContent":["var _datadogDebugIds,_datadogDebugIdMeta;void 0===_datadogDebugIds&&(_datadogDebugIds={});try{var stack=(new Error).stack;stack&&(_datadogDebugIds[stack]=\\"${expectedDebugId}\\",_datadogDebugIdMeta=\\"datadog-debug-id-${expectedDebugId}\\")}catch(e){}"],"names":[],"mappings":"","debugId":"${expectedDebugId}"}`;
+            const expectedMap = `{"version":3,"sources":["__motadata_debugid__"],"sourcesContent":["var _motadataDebugIds,_motadataDebugIdMeta;void 0===_motadataDebugIds&&(_motadataDebugIds={});try{var stack=(new Error).stack;stack&&(_motadataDebugIds[stack]=\\"${expectedDebugId}\\",_motadataDebugIdMeta=\\"motadata-debug-id-${expectedDebugId}\\")}catch(e){}"],"names":[],"mappings":"","debugId":"${expectedDebugId}"}`;
             expect(bundle.map).toEqual(expectedMap);
         });
 
@@ -102,7 +102,7 @@ describe('Datadog Metro Plugin', () => {
             const expectedDebugId = createDebugIdFromString(
                 codeSnippetHash.digest('hex')
             );
-            const serializer = createDatadogMetroSerializer();
+            const serializer = createMotadataMetroSerializer();
 
             const bundle = await serializer(
                 ...mockSerializerArgsForSourceMappingURLModule()
@@ -113,7 +113,7 @@ describe('Datadog Metro Plugin', () => {
 
             const expectedCode = [
                 DEBUG_ID_CODE_SNIPPET.replaceAll(
-                    '__datadog_debug_id_placeholder__',
+                    '__motadata_debug_id_placeholder__',
                     expectedDebugId
                 ),
                 `//# debugId=${expectedDebugId}`,
@@ -122,7 +122,7 @@ describe('Datadog Metro Plugin', () => {
 
             expect(bundle.code).toEqual(expectedCode);
 
-            const expectedMap = `{"version":3,"sources":["__datadog_debugid__","index.js"],"sourcesContent":["var _datadogDebugIds,_datadogDebugIdMeta;void 0===_datadogDebugIds&&(_datadogDebugIds={});try{var stack=(new Error).stack;stack&&(_datadogDebugIds[stack]=\\"${expectedDebugId}\\",_datadogDebugIdMeta=\\"datadog-debug-id-${expectedDebugId}\\")}catch(e){}","//# sourceMappingURL=index.android.bundle.map"],"names":[],"mappings":"","debugId":"${expectedDebugId}"}`;
+            const expectedMap = `{"version":3,"sources":["__motadata_debugid__","index.js"],"sourcesContent":["var _motadataDebugIds,_motadataDebugIdMeta;void 0===_motadataDebugIds&&(_motadataDebugIds={});try{var stack=(new Error).stack;stack&&(_motadataDebugIds[stack]=\\"${expectedDebugId}\\",_motadataDebugIdMeta=\\"motadata-debug-id-${expectedDebugId}\\")}catch(e){}","//# sourceMappingURL=index.android.bundle.map"],"names":[],"mappings":"","debugId":"${expectedDebugId}"}`;
             expect(bundle.map).toEqual(expectedMap);
         });
     });
@@ -316,7 +316,7 @@ describe('Datadog Metro Plugin', () => {
             // THEN
             expect(check).toBe(true);
             expect(warnSpy).toHaveBeenCalledWith(
-                '[DATADOG METRO PLUGIN] The debug ID found in the file does not match the calculated debug ID.'
+                '[MOTADATA METRO PLUGIN] The debug ID found in the file does not match the calculated debug ID.'
             );
         });
 
@@ -336,7 +336,7 @@ describe('Datadog Metro Plugin', () => {
         test('M getDebugIdFromBundleSource finds the debug ID in bundle code if present', () => {
             // GIVEN
             const debugId = 'a422b269-0dba-4341-93c2-73e1bcf71fbb';
-            const mockCode = `var _datadogDebugIds,_datadogDebugIdMeta;void 0===_datadogDebugIds&&(_datadogDebugIds={});try{var stack=(new Error).stack;stack&&(_datadogDebugIds[stack]="${debugId}",_datadogDebugIdMeta="datadog-debug-id-${debugId}")}catch(e){}`;
+            const mockCode = `var _motadataDebugIds,_motadataDebugIdMeta;void 0===_motadataDebugIds&&(_motadataDebugIds={});try{var stack=(new Error).stack;stack&&(_motadataDebugIds[stack]="${debugId}",_motadataDebugIdMeta="motadata-debug-id-${debugId}")}catch(e){}`;
 
             // WHEN
             const debugIdMatch = getDebugIdFromBundleSource(mockCode);
@@ -348,7 +348,7 @@ describe('Datadog Metro Plugin', () => {
         test('M getDebugIdFromBundleSource returns undefined if the debug ID in bundle code is not present', () => {
             // GIVEN
             const mockCode =
-                'var _datadogDebugIds,_datadogDebugIdMeta;void 0===_datadogDebugIds';
+                'var _motadataDebugIds,_motadataDebugIdMeta;void 0===_motadataDebugIds';
 
             // WHEN
             const debugIdMatch = getDebugIdFromBundleSource(mockCode);

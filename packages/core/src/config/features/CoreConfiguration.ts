@@ -72,7 +72,7 @@ class CoreConfiguration implements CoreConfigurationType {
     // Service Name
     public service?: string = DEFAULTS.service;
 
-    // Datadog Site
+    // Motadata Site
     public site: string = DEFAULTS.site;
 
     // Trace Configuration

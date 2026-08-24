@@ -6,7 +6,7 @@
 
 import { getGlobalInstance } from '../../utils/singletonUtils';
 
-const GLOBAL_STATE_MODULE = 'com.datadog.reactnative.sdk.global_state';
+const GLOBAL_STATE_MODULE = 'com.motadata.reactnative.sdk.global_state';
 
 /**
  * A singleton container for attributes that are shared internally across all

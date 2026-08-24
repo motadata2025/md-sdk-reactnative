@@ -1,0 +1,109 @@
+/*
+ * Unless explicitly stated otherwise all files in this repository are licensed under the Apache License Version 2.0.
+ * This product includes software developed at Datadog (https://www.datadoghq.com/).
+ * Copyright 2016-Present Datadog, Inc.
+ */
+
+package com.motadata.tools.unit
+
+import com.motadata.android.core.configuration.BatchProcessingLevel
+import com.motadata.android.core.configuration.BatchSize
+import com.motadata.android.core.configuration.UploadFrequency
+import com.motadata.android.rum.configuration.VitalsUpdateFrequency
+import com.motadata.reactnative.ConfigurationForTelemetry
+import com.motadata.reactnative.MdSdkConfiguration
+import com.motadata.reactnative.ProxyAuthenticator
+import com.facebook.react.bridge.ReadableMap
+import java.net.Proxy
+
+@Suppress("CyclomaticComplexMethod")
+fun MdSdkConfiguration.toReadableJavaOnlyMap(): ReadableMap {
+    val map = mutableMapOf<String, Any?>()
+
+    map["clientToken"] = clientToken
+    map["env"] = env
+
+    site?.let { map["site"] = it }
+    service?.let { map["service"] = it }
+    verbosity?.let { map["verbosity"] = it }
+
+    trackingConsent?.let { map["trackingConsent"] = it }
+
+    map["uploadFrequency"] = uploadFrequency ?: UploadFrequency.AVERAGE.toString()
+
+    map["batchSize"] = batchSize ?: BatchSize.MEDIUM.toString()
+
+    map["batchProcessingLevel"] =
+        batchProcessingLevel ?: BatchProcessingLevel.MEDIUM.toString()
+
+    proxyConfiguration?.let { proxyPair ->
+        map["proxyConfiguration"] = proxyPair.toReadableMap()
+    }
+
+    additionalConfiguration?.let {
+        map["additionalConfiguration"] = it.toReadableMap()
+    }
+
+    run {
+        val rum = rumConfiguration
+        val rumMap = mutableMapOf<String, Any?>()
+
+        rum?.applicationId?.let { rumMap["applicationId"] = it }
+        rumMap["trackFrustrations"] = rum?.trackFrustrations ?: false
+        rumMap["longTaskThresholdMs"] = rum?.longTaskThresholdMs ?: 0.0
+        rumMap["sessionSampleRate"] = rum?.sessionSampleRate ?: 100.0
+        rum?.resourceTraceSampleRate?.let { rumMap["resourceTraceSampleRate"] = it }
+        rumMap["vitalsUpdateFrequency"] =
+            rum?.vitalsUpdateFrequency ?: VitalsUpdateFrequency.AVERAGE.toString()
+        rumMap["trackBackgroundEvents"] = rum?.trackBackgroundEvents ?: false
+        rumMap["nativeCrashReportEnabled"] = rum?.nativeCrashReportEnabled ?: false
+        rumMap["nativeLongTaskThresholdMs"] = rum?.nativeLongTaskThresholdMs ?: 0.0
+        rum?.nativeViewTracking?.let { rumMap["nativeViewTracking"] = it }
+        rum?.nativeInteractionTracking?.let { rumMap["nativeInteractionTracking"] = it }
+        rum?.trackNonFatalAnrs?.let { rumMap["trackNonFatalAnrs"] = it }
+        rum?.firstPartyHosts?.let {
+            rumMap["firstPartyHosts"] = it.toFirstPartyHostsReadableArray()
+        }
+        rumMap["initialResourceThreshold"] = rum?.initialResourceThreshold ?: 0.1
+        rumMap["telemetrySampleRate"] = rum?.telemetrySampleRate ?: 20.0
+        rum?.customEndpoint?.let { rumMap["customEndpoint"] = it }
+        map["rumConfiguration"] = rumMap.toReadableMap()
+    }
+
+    traceConfiguration?.let { trace ->
+        val traceMap = mutableMapOf<String, Any?>()
+        trace.customEndpoint?.let { traceMap["customEndpoint"] = it }
+
+        map["traceConfiguration"] = traceMap.toReadableMap()
+    }
+
+    configurationForTelemetry?.let { telemetry ->
+        map["configurationForTelemetry"] = telemetry.toReadableJavaOnlyMap()
+    }
+
+    return map.toReadableMap()
+}
+
+internal fun ConfigurationForTelemetry.toReadableJavaOnlyMap(): ReadableMap {
+    val map = mutableMapOf<String, Any?>()
+    initializationType?.let { map.put("initializationType", it) }
+    trackErrors?.let { map.put("trackErrors", it) }
+    trackInteractions?.let { map.put("trackInteractions", it) }
+    trackNetworkRequests?.let { map.put("trackNetworkRequests", it) }
+    reactVersion?.let { map.put("reactVersion", it) }
+    reactNativeVersion?.let { map.put("reactNativeVersion", it) }
+    return map.toReadableMap()
+}
+
+internal fun Pair<Proxy, ProxyAuthenticator?>.toReadableMap(): ReadableMap {
+    val map = mutableMapOf<String, Any?>()
+    val inetAddress = first.address().toString()
+    val address = inetAddress.substringBeforeLast(":")
+    val port = inetAddress.substringAfterLast(":").toInt()
+    map.put("type", first.type())
+    map.put("address", address)
+    map.put("port", port)
+    map.put("username", second?.username)
+    map.put("password", second?.password)
+    return map.toReadableMap()
+}

@@ -6,20 +6,20 @@
 import type { MetroConfig } from 'metro';
 
 import {
-    createDatadogMetroSerializer,
+    createMotadataMetroSerializer,
     unstable_beforeAssetSerializationPlugin
 } from './metroSerializer';
 import type {
-    DatadogExpoConfigOptions,
+    MotadataExpoConfigOptions,
     DefaultConfigOptions
 } from './types/expoTypes';
-import type { DatadogMetroSerializer } from './types/metroTypes';
+import type { MotadataMetroSerializer } from './types/metroTypes';
 import { getDefaultExpoConfig } from './utils';
 
 /**
- * Custom Datadog Metro Configuration.
+ * Custom Motadata Metro Configuration.
  */
-export type DatadogMetroConfigOptions = {
+export type MotadataMetroConfigOptions = {
     /**
      * Determines whether a Debug ID should be injected into bundles and sourcemaps.
      *
@@ -32,18 +32,18 @@ export type DatadogMetroConfigOptions = {
 };
 
 /**
- * Extends the Metro bundler configuration to integrate with Datadog.
+ * Extends the Metro bundler configuration to integrate with Motadata.
  *
  * *Note: If a custom serializer is used and `config.useDebugId` is set to `true` (as it is by default),
- * you must manually invoke `options.datadogBundleCallback` within the serializer.*
+ * you must manually invoke `options.motadataBundleCallback` within the serializer.*
  */
-export function withDatadogMetroConfig(
-    config: MetroConfig & DatadogMetroConfigOptions
+export function withMotadataMetroConfig(
+    config: MetroConfig & MotadataMetroConfigOptions
 ): MetroConfig {
     let newConfig = config;
 
     if (config.useDebugId ?? true) {
-        newConfig = withDatadogDebugId(config);
+        newConfig = withMotadataDebugId(config);
     }
 
     return {
@@ -55,16 +55,16 @@ export function withDatadogMetroConfig(
 }
 
 /**
- * Extends the Expo configuration to integrate with Datadog.
+ * Extends the Expo configuration to integrate with Motadata.
  * @param config
  * @returns
  */
-export function getDatadogExpoConfig(
+export function getMotadataExpoConfig(
     projectRoot: string,
-    options: DefaultConfigOptions & DatadogExpoConfigOptions = {}
+    options: DefaultConfigOptions & MotadataExpoConfigOptions = {}
 ): DefaultConfigOptions {
     const plugins = options.unstable_beforeAssetSerializationPlugins ?? [];
-    const datadogOptions: DefaultConfigOptions = {
+    const motadataOptions: DefaultConfigOptions = {
         ...options,
         unstable_beforeAssetSerializationPlugins: [
             ...plugins,
@@ -74,7 +74,7 @@ export function getDatadogExpoConfig(
 
     return (options.getDefaultConfig ?? getDefaultExpoConfig)(
         projectRoot,
-        datadogOptions
+        motadataOptions
     );
 }
 
@@ -82,10 +82,10 @@ export function getDatadogExpoConfig(
  * Extends the Metro bundler configuration by enabling Debug ID injection.
  * Ref: https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md
  */
-export function withDatadogDebugId(config: MetroConfig): MetroConfig {
-    const customSerializer = createDatadogMetroSerializer(
+export function withMotadataDebugId(config: MetroConfig): MetroConfig {
+    const customSerializer = createMotadataMetroSerializer(
         config.serializer?.customSerializer || undefined
-    ) as DatadogMetroSerializer;
+    ) as MotadataMetroSerializer;
 
     return {
         ...config,

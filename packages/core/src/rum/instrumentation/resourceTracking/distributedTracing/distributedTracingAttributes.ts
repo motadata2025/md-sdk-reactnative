@@ -8,7 +8,7 @@ import type { PropagatorType } from '../../../types';
 
 import type { SpanId, TraceId } from './TracingIdentifier';
 
-export type DdRumResourceTracingAttributes =
+export type MdRumResourceTracingAttributes =
     | {
           tracingStrategy: 'KEEP';
           traceId: TraceId;

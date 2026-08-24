@@ -1,5 +1,5 @@
 {
-    "$schema": "../../../../../datadog-configuration.schema.json",
+    "$schema": "../../../../../motadata-configuration.schema.json",
     "configuration": {
         "env": "fake-env",
         "clientToken": "fake-client-token",

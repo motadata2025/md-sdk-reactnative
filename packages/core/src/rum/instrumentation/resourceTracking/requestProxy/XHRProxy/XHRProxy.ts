@@ -12,7 +12,7 @@ import {
     getCachedSessionId,
     getCachedUserId
 } from '../../../../helper';
-import type { DdRumResourceTracingAttributes } from '../../distributedTracing/distributedTracingAttributes';
+import type { MdRumResourceTracingAttributes } from '../../distributedTracing/distributedTracingAttributes';
 import { getTracingHeadersFromAttributes } from '../../distributedTracing/distributedTracingHeaders';
 import { getTracingAttributes } from '../../distributedTracing/distributedTracing';
 import {
@@ -21,20 +21,20 @@ import {
     TRACKED_BY_HEADER_VALUE
 } from '../../distributedTracing/headers';
 import {
-    DATADOG_GRAPH_QL_ERROR_HEADER,
-    DATADOG_GRAPH_QL_OPERATION_NAME_HEADER,
-    DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER,
-    DATADOG_GRAPH_QL_PAYLOAD_HEADER,
-    DATADOG_GRAPH_QL_VARIABLES_HEADER
+    MOTADATA_GRAPH_QL_ERROR_HEADER,
+    MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER,
+    MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER,
+    MOTADATA_GRAPH_QL_PAYLOAD_HEADER,
+    MOTADATA_GRAPH_QL_VARIABLES_HEADER
 } from '../../graphql/graphqlHeaders';
 import { extractGraphQLErrors } from '../../graphql/graphqlUtils';
-import { DATADOG_BAGGAGE_HEADER, isDatadogCustomHeader } from '../../headers';
+import { MOTADATA_BAGGAGE_HEADER, isMotadataCustomHeader } from '../../headers';
 import type { RequestProxyOptions } from '../interfaces/RequestProxy';
 import { RequestProxy } from '../interfaces/RequestProxy';
-import type { DdRumResourceGraphqlAttributes } from '../interfaces/RumResource';
+import type { MdRumResourceGraphqlAttributes } from '../interfaces/RumResource';
 
-import { ResourceReporter } from './DatadogRumResource/ResourceReporter';
-import { filterDevResource } from './DatadogRumResource/internalDevResourceBlocklist';
+import { ResourceReporter } from './MotadataRumResource/ResourceReporter';
+import { filterDevResource } from './MotadataRumResource/internalDevResourceBlocklist';
 import { URLHostParser } from './URLHostParser';
 import { formatBaggageHeader } from './baggageHeaderUtils';
 import { calculateResponseSize } from './responseSize';
@@ -42,19 +42,19 @@ import { getErrorData, readXhrJsonBody } from './xhrUtils';
 
 const RESPONSE_START_LABEL = 'response_start';
 
-interface DdRumXhr extends XMLHttpRequest {
-    _datadog_xhr: DdRumXhrContext;
+interface MdRumXhr extends XMLHttpRequest {
+    _motadata_xhr: MdRumXhrContext;
 }
 
-interface DdRumXhrContext {
-    graphql: DdRumResourceGraphqlAttributes & {
+interface MdRumXhrContext {
+    graphql: MdRumResourceGraphqlAttributes & {
         trackErrors?: boolean;
     };
     method: string;
     url: string;
     reported: boolean;
     timer: Timer;
-    tracingAttributes: DdRumResourceTracingAttributes;
+    tracingAttributes: MdRumResourceTracingAttributes;
     baggageHeaderEntries: Set<string>;
 }
 
@@ -125,14 +125,14 @@ const proxyOpen = (
     const originalXhrOpen = xhrType.prototype.open;
 
     xhrType.prototype.open = function open(
-        this: DdRumXhr,
+        this: MdRumXhr,
         method: string,
         url: string
     ) {
         const hostname = URLHostParser(url);
         // Keep track of the method and url
         // start time is tracked by the `send` method
-        this._datadog_xhr = {
+        this._motadata_xhr = {
             method,
             url,
             reported: false,
@@ -157,14 +157,14 @@ const proxySend = (providers: XHRProxyProviders): void => {
     const xhrType = providers.xhrType;
     const originalXhrSend = xhrType.prototype.send;
 
-    xhrType.prototype.send = function send(this: DdRumXhr) {
-        if (this._datadog_xhr) {
+    xhrType.prototype.send = function send(this: MdRumXhr) {
+        if (this._motadata_xhr) {
             // keep track of start time
-            this._datadog_xhr.timer.start();
+            this._motadata_xhr.timer.start();
 
             // Tracing Headers
             const tracingHeaders = getTracingHeadersFromAttributes(
-                this._datadog_xhr.tracingAttributes
+                this._motadata_xhr.tracingAttributes
             );
 
             tracingHeaders.forEach(({ header, value }) => {
@@ -173,10 +173,10 @@ const proxySend = (providers: XHRProxyProviders): void => {
 
             // Join all baggage header entries
             const baggageHeader = formatBaggageHeader(
-                this._datadog_xhr.baggageHeaderEntries
+                this._motadata_xhr.baggageHeaderEntries
             );
             if (baggageHeader) {
-                this.setRequestHeader(DATADOG_BAGGAGE_HEADER, baggageHeader);
+                this.setRequestHeader(MOTADATA_BAGGAGE_HEADER, baggageHeader);
             }
 
             this.setRequestHeader(
@@ -193,7 +193,7 @@ const proxySend = (providers: XHRProxyProviders): void => {
 };
 
 const proxyOnReadyStateChange = (
-    xhrProxy: DdRumXhr,
+    xhrProxy: MdRumXhr,
     providers: XHRProxyProviders
 ): void => {
     const xhrType = providers.xhrType;
@@ -201,7 +201,7 @@ const proxyOnReadyStateChange = (
 
     xhrProxy.onreadystatechange = function onreadystatechange() {
         if (xhrProxy.readyState === xhrType.DONE) {
-            if (!xhrProxy._datadog_xhr.reported) {
+            if (!xhrProxy._motadata_xhr.reported) {
                 reportXhr(xhrProxy, providers.resourceReporter).catch(error => {
                     const errorData = getErrorData(error);
                     if (errorData) {
@@ -211,10 +211,10 @@ const proxyOnReadyStateChange = (
                         );
                     }
                 });
-                xhrProxy._datadog_xhr.reported = true;
+                xhrProxy._motadata_xhr.reported = true;
             }
         } else if (xhrProxy.readyState === xhrType.HEADERS_RECEIVED) {
-            xhrProxy._datadog_xhr.timer.recordTick(RESPONSE_START_LABEL);
+            xhrProxy._motadata_xhr.timer.recordTick(RESPONSE_START_LABEL);
         }
 
         if (originalOnreadystatechange) {
@@ -225,12 +225,12 @@ const proxyOnReadyStateChange = (
 };
 
 const reportXhr = async (
-    xhrProxy: DdRumXhr,
+    xhrProxy: MdRumXhr,
     resourceReporter: ResourceReporter
 ): Promise<void> => {
     const responseSize = calculateResponseSize(xhrProxy);
 
-    const context = xhrProxy._datadog_xhr;
+    const context = xhrProxy._motadata_xhr;
 
     const key = `${context.timer.startTime}/${context.method}`;
 
@@ -286,31 +286,31 @@ const proxySetRequestHeader = (providers: XHRProxyProviders): void => {
     const originalXhrSetRequestHeader = xhrType.prototype.setRequestHeader;
 
     xhrType.prototype.setRequestHeader = function sendRequestHeader(
-        this: DdRumXhr,
+        this: MdRumXhr,
         header: string,
         value: string
     ) {
         const key = header.toLowerCase();
-        if (isDatadogCustomHeader(key)) {
+        if (isMotadataCustomHeader(key)) {
             switch (key) {
-                case DATADOG_GRAPH_QL_OPERATION_NAME_HEADER:
-                    this._datadog_xhr.graphql.operationName = value;
+                case MOTADATA_GRAPH_QL_OPERATION_NAME_HEADER:
+                    this._motadata_xhr.graphql.operationName = value;
                     break;
-                case DATADOG_GRAPH_QL_OPERATION_TYPE_HEADER:
-                    this._datadog_xhr.graphql.operationType = value;
+                case MOTADATA_GRAPH_QL_OPERATION_TYPE_HEADER:
+                    this._motadata_xhr.graphql.operationType = value;
                     break;
-                case DATADOG_GRAPH_QL_VARIABLES_HEADER:
-                    this._datadog_xhr.graphql.variables = value;
+                case MOTADATA_GRAPH_QL_VARIABLES_HEADER:
+                    this._motadata_xhr.graphql.variables = value;
                     break;
-                case DATADOG_GRAPH_QL_PAYLOAD_HEADER:
-                    this._datadog_xhr.graphql.payload = value;
+                case MOTADATA_GRAPH_QL_PAYLOAD_HEADER:
+                    this._motadata_xhr.graphql.payload = value;
                     break;
-                case DATADOG_GRAPH_QL_ERROR_HEADER:
-                    this._datadog_xhr.graphql.trackErrors =
+                case MOTADATA_GRAPH_QL_ERROR_HEADER:
+                    this._motadata_xhr.graphql.trackErrors =
                         value === 'true' || value === '1';
                     break;
-                case DATADOG_BAGGAGE_HEADER:
-                    // Apply Baggage Header only if pre-processed by Datadog
+                case MOTADATA_BAGGAGE_HEADER:
+                    // Apply Baggage Header only if pre-processed by Motadata
                     return originalXhrSetRequestHeader.apply(this, [
                         BAGGAGE_HEADER_KEY,
                         value
@@ -324,7 +324,7 @@ const proxySetRequestHeader = (providers: XHRProxyProviders): void => {
             }
         } else if (key === BAGGAGE_HEADER_KEY) {
             // Intercept User Baggage Header entries to apply them later
-            this._datadog_xhr.baggageHeaderEntries?.add(value);
+            this._motadata_xhr.baggageHeaderEntries?.add(value);
         } else {
             // eslint-disable-next-line prefer-rest-params
             return originalXhrSetRequestHeader.apply(this, arguments as any);

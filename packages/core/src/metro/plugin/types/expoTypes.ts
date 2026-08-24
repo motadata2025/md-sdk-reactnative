@@ -52,7 +52,7 @@ export interface DefaultConfigOptions {
  * This product includes software developed at Datadog (https://www.datadoghq.com/).
  * Copyright 2016-Present Datadog, Inc.
  */
-export interface DatadogExpoConfigOptions {
+export interface MotadataExpoConfigOptions {
     /**
      * You can use this property to specify your getDefaultConfig function. By default, the
      * `getDefaultConfig` function from `@expo/metro-config` will be used.

@@ -5,7 +5,7 @@
  */
 
 import * as mock from '../../jest/mock';
-import { DdLogs, DdRum, DdTrace, DdSdkReactNative } from '../index';
+import { MdRum, MdTrace, MdSdkReactNative } from '../index';
 
 // 🚨 READ THIS FIRST IF THIS TEST IS FAILING
 /*
@@ -22,17 +22,8 @@ import { DdLogs, DdRum, DdTrace, DdSdkReactNative } from '../index';
  */
 
 const privateProperties = {
-    DdTrace: ['nativeTrace'],
-    DdLogs: [
-        'nativeLogs',
-        'logEventMapper',
-        'printLogDroppedSdkNotInitialized',
-        'printLogDroppedByMapper',
-        'printLogTracked',
-        'log',
-        'logWithError'
-    ],
-    DdRum: [
+    MdTrace: ['nativeTrace'],
+    MdRum: [
         'nativeRum',
         'errorEventMapper',
         'resourceEventMapper',
@@ -41,18 +32,18 @@ const privateProperties = {
         'getStopActionNativeCallArgs',
         'currentRumSessionId'
     ],
-    DdSdkReactNative: [
-        'DD_SOURCE_KEY',
-        'DD_SDK_VERSION',
-        'DD_VERSION',
-        'DD_VERSION_SUFFIX',
-        'DD_REACT_NATIVE_VERSION',
+    MdSdkReactNative: [
+        'MD_SOURCE_KEY',
+        'MD_SDK_VERSION',
+        'MD_VERSION',
+        'MD_VERSION_SUFFIX',
+        'MD_REACT_NATIVE_VERSION',
         'wasAutoInstrumented',
         'initializeNativeSDK',
-        '_initializeFromDatadogProviderWithConfigurationAsync',
-        '_enableFeaturesFromDatadogProvider',
-        '_enableFeaturesFromDatadogProviderAsync',
-        '_initializeFromDatadogProvider',
+        '_initializeFromMotadataProviderWithConfigurationAsync',
+        '_enableFeaturesFromMotadataProvider',
+        '_enableFeaturesFromMotadataProviderAsync',
+        '_initializeFromMotadataProvider',
         'buildConfiguration'
     ]
 };
@@ -67,7 +58,7 @@ const getPublicPropertiesFromModule = (
 };
 
 describe('official mock', () => {
-    describe.each([{ DdTrace }, { DdLogs }, { DdRum }, { DdSdkReactNative }])(
+    describe.each([{ MdTrace }, { MdRum }, { MdSdkReactNative }])(
         'mocks module: %s',
         moduleObject => {
             // We get the name of the module and the module from our object list

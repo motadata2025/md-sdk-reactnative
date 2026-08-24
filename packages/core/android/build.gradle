@@ -105,7 +105,7 @@ android {
   def agpVersion = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION
 
   if (agpVersion.tokenize('.')[0].toInteger() >= 7) {
-    namespace = "com.datadog.reactnative"
+    namespace = "com.motadata.reactnative"
   }
 
   if (agpVersion.tokenize('.')[0].toInteger() >= 8) {
@@ -195,16 +195,16 @@ dependencies {
   }
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
   compileOnly "com.squareup.okhttp3:okhttp:3.12.13"
- // dd-sdk-android-rum requires androidx.metrics:metrics-performance.
+ // motadata-rum-android requires androidx.metrics:metrics-performance.
  // From 2.21.0, it uses 1.0.0-beta02, which requires Gradle 8.6.0.
  // This breaks builds if the React Native target is below 0.76.0. as it relies on Gradle 8.5.0.
  // To avoid this, we enforce 1.0.0-beta01 on RN < 0.76.0
  if (reactNativeMinorVersion < 76) {
-      implementation("com.datadoghq:dd-sdk-android-rum:3.10.0") {
+      implementation("com.motadata:motadata-rum-android:1.0.1") {
           exclude group: "androidx.metrics", module: "metrics-performance"
       }
       implementation "androidx.metrics:metrics-performance:1.0.0-beta01"
-      // dd-sdk-android requires androidx.core:core and androidx.core:core-ktx
+      // motadata-rum-android requires androidx.core:core and androidx.core:core-ktx
       // From 3.8.0, it uses 1.15.0, which requires compileSdk 35.
       // However, React Native versions below 0.76.0 use compileSdk 34,
       // so we pin 1.13.1 on those, since it's the last version compatible with compileSdk 34.
@@ -220,13 +220,9 @@ dependencies {
           }
       }
   } else {
-      implementation "com.datadoghq:dd-sdk-android-rum:3.10.0"
+      implementation "com.motadata:motadata-rum-android:1.0.1"
   }
-  implementation "com.datadoghq:dd-sdk-android-logs:3.10.0"
-  implementation "com.datadoghq:dd-sdk-android-trace:3.10.0"
-  implementation "com.datadoghq:dd-sdk-android-webview:3.10.0"
-  implementation "com.datadoghq:dd-sdk-android-ndk:3.10.0"
-  implementation "com.datadoghq:dd-sdk-android-flags:3.10.0"
+  implementation "com.motadata:motadata-rum-android-trace:1.0.1"
   implementation "com.google.code.gson:gson:2.11.0"
   testImplementation "org.junit.platform:junit-platform-launcher:1.6.2"
   testImplementation "org.junit.jupiter:junit-jupiter-api:5.6.2"

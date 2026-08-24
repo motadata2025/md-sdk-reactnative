@@ -4,22 +4,22 @@
  * Copyright 2016-Present Datadog, Inc.
  */
 
-import type { DdSdkNativeConfiguration } from './config/features/CoreConfigurationNative';
+import type { MdSdkNativeConfiguration } from './config/features/CoreConfigurationNative';
 
 declare global {
     // eslint-disable-next-line no-var, vars-on-top
-    var __DD_RN_BABEL_PLUGIN_ENABLED__: boolean;
+    var __MD_RN_BABEL_PLUGIN_ENABLED__: boolean;
 }
 
 /**
- * The entry point to initialize Datadog's features.
+ * The entry point to initialize Motadata's features.
  */
-export type DdSdkType = {
+export type MdSdkType = {
     /**
-     * Initializes Datadog's features.
+     * Initializes Motadata's features.
      * @param configuration: The configuration to use.
      */
-    initialize(configuration: DdSdkNativeConfiguration): Promise<void>;
+    initialize(configuration: MdSdkNativeConfiguration): Promise<void>;
 
     /**
      * Sets a specific attribute in the global context attached with all future Logs, Spans and RUM
@@ -94,9 +94,9 @@ export type DdSdkType = {
 };
 
 /**
- * The entry point to use Datadog's Trace feature.
+ * The entry point to use Motadata's Trace feature.
  */
-export type DdTraceType = {
+export type MdTraceType = {
     /**
      * Start a span, and returns a unique identifier for the span.
      * @param operation: The operation name of the span.
@@ -139,7 +139,7 @@ export type AccountInfo = {
     extraInfo?: object;
 };
 
-// DdLogs
+// MdLogs
 
 export type LogStatus = 'debug' | 'info' | 'warn' | 'error';
 
@@ -159,7 +159,7 @@ export type LogEvent = {
 
 export type LogEventMapper = (logEvent: LogEvent) => LogEvent | null;
 
-// DdRum
+// MdRum
 export enum ErrorSource {
     NETWORK = 'NETWORK',
     SOURCE = 'SOURCE',

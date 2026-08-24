@@ -4,7 +4,7 @@ This product includes software developed at Datadog (https://www.datadoghq.com/)
 Copyright 2016-Present Datadog, Inc.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.datadog.reactnative">
+          package="com.motadata.reactnative">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>

@@ -4,7 +4,7 @@
  * Copyright 2016-Present Datadog, Inc.
  */
 
-import { DdSdk } from '../DdSdk';
+import { MdSdk } from '../MdSdk';
 
 import { builtInEncoders } from './defaultEncoders';
 import type { EncodeContext } from './helpers';
@@ -24,7 +24,7 @@ import { isPlainObject, warn } from './utils';
  */
 export function encodeAttributes(input: unknown): Record<string, Encodable> {
     const result: Record<string, Encodable> = {};
-    const allEncoders = [...DdSdk.attributeEncoders, ...builtInEncoders];
+    const allEncoders = [...MdSdk.attributeEncoders, ...builtInEncoders];
     const context: EncodeContext = { numOfAttributes: 0 };
     if (isPlainObject(input)) {
         for (const [k, v] of Object.entries(input)) {

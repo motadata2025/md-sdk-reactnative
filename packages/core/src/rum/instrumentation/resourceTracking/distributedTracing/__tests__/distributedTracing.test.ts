@@ -6,7 +6,7 @@
 
 import BigInt from 'big-integer';
 
-import { DdRumResourceTracking } from '../../DdRumResourceTracking';
+import { MdRumResourceTracking } from '../../MdRumResourceTracking';
 import { XMLHttpRequestMock } from '../../__tests__/__utils__/XMLHttpRequestMock';
 import type { TraceId } from '../TracingIdentifier';
 import {
@@ -393,12 +393,12 @@ describe('Sampling behavior', () => {
         });
 
         beforeEach(() => {
-            DdRumResourceTracking.stopTracking();
+            MdRumResourceTracking.stopTracking();
         });
 
         inputs.forEach(([identifier, sampleRate, expected]) => {
             it(`sampling decision is deterministic for traceId=${identifier.toString()} and sampleRate=${sampleRate}`, () => {
-                DdRumResourceTracking.startTracking({
+                MdRumResourceTracking.startTracking({
                     resourceTraceSampleRate: sampleRate,
                     firstPartyHosts: []
                 });
@@ -497,13 +497,13 @@ describe('Sampling behavior', () => {
         });
 
         beforeEach(() => {
-            DdRumResourceTracking.stopTracking();
+            MdRumResourceTracking.stopTracking();
         });
 
         inputs.forEach(([sessionId, identifier, sampleRate, expected]) => {
             it(`sampling decision is deterministic for ${sessionId} and sampleRate=${sampleRate}`, () => {
                 // see note below
-                DdRumResourceTracking.startTracking({
+                MdRumResourceTracking.startTracking({
                     resourceTraceSampleRate: sampleRate,
                     firstPartyHosts: []
                 });
@@ -541,13 +541,13 @@ describe('Sampling behavior', () => {
         });
 
         beforeEach(() => {
-            DdRumResourceTracking.stopTracking();
+            MdRumResourceTracking.stopTracking();
         });
 
         test('Setting trace sample rate to 100 should always sample', () => {
             const sampleRate = 100;
 
-            DdRumResourceTracking.startTracking({
+            MdRumResourceTracking.startTracking({
                 resourceTraceSampleRate: sampleRate,
                 firstPartyHosts: []
             });
@@ -573,7 +573,7 @@ describe('Sampling behavior', () => {
         test('Setting trace sample rate to 0 should never sample', () => {
             const sampleRate = 0;
 
-            DdRumResourceTracking.startTracking({
+            MdRumResourceTracking.startTracking({
                 resourceTraceSampleRate: sampleRate,
                 firstPartyHosts: []
             });
@@ -599,7 +599,7 @@ describe('Sampling behavior', () => {
         test('Low sampling rate returns samples less often', () => {
             const sampleRate = 23;
 
-            DdRumResourceTracking.startTracking({
+            MdRumResourceTracking.startTracking({
                 resourceTraceSampleRate: sampleRate,
                 firstPartyHosts: []
             });
@@ -635,7 +635,7 @@ describe('Sampling behavior', () => {
         test('High sampling rate returns samples more often', () => {
             const sampleRate = 85;
 
-            DdRumResourceTracking.startTracking({
+            MdRumResourceTracking.startTracking({
                 resourceTraceSampleRate: sampleRate,
                 firstPartyHosts: []
             });

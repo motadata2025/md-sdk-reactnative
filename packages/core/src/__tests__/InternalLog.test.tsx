@@ -81,7 +81,7 @@ it('M output debug W log(debug) (DEBUG+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(false);
     expect(baseConsoleWarnCalled).toStrictEqual(false);
     expect(baseConsoleErrorCalled).toStrictEqual(false);
-    expect(baseConsoleDebugArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleDebugArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M output info W log(info) (DEBUG+ allowed)', async () => {
@@ -97,7 +97,7 @@ it('M output info W log(info) (DEBUG+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(true);
     expect(baseConsoleWarnCalled).toStrictEqual(false);
     expect(baseConsoleErrorCalled).toStrictEqual(false);
-    expect(baseConsoleInfoArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleInfoArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M output warn W log(warn) (DEBUG+ allowed)', async () => {
@@ -113,7 +113,7 @@ it('M output warn W log(warn) (DEBUG+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(false);
     expect(baseConsoleWarnCalled).toStrictEqual(true);
     expect(baseConsoleErrorCalled).toStrictEqual(false);
-    expect(baseConsoleWarnArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleWarnArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M output error W log(error) (DEBUG+ allowed)', async () => {
@@ -129,7 +129,7 @@ it('M output error W log(error) (DEBUG+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(false);
     expect(baseConsoleWarnCalled).toStrictEqual(false);
     expect(baseConsoleErrorCalled).toStrictEqual(true);
-    expect(baseConsoleErrorArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleErrorArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M not output debug W log(debug) (INFO+ allowed)', async () => {
@@ -160,7 +160,7 @@ it('M output info W log(info) (INFO+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(true);
     expect(baseConsoleWarnCalled).toStrictEqual(false);
     expect(baseConsoleErrorCalled).toStrictEqual(false);
-    expect(baseConsoleInfoArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleInfoArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M output warn W log(warn) (INFO+ allowed)', async () => {
@@ -176,7 +176,7 @@ it('M output warn W log(warn) (INFO+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(false);
     expect(baseConsoleWarnCalled).toStrictEqual(true);
     expect(baseConsoleErrorCalled).toStrictEqual(false);
-    expect(baseConsoleWarnArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleWarnArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M output error W log(error) (INFO+ allowed)', async () => {
@@ -192,7 +192,7 @@ it('M output error W log(error) (INFO+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(false);
     expect(baseConsoleWarnCalled).toStrictEqual(false);
     expect(baseConsoleErrorCalled).toStrictEqual(true);
-    expect(baseConsoleErrorArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleErrorArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M not output debug W log(debug) (WARN+ allowed)', async () => {
@@ -238,7 +238,7 @@ it('M output warn W log(warn) (WARN+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(false);
     expect(baseConsoleWarnCalled).toStrictEqual(true);
     expect(baseConsoleErrorCalled).toStrictEqual(false);
-    expect(baseConsoleWarnArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleWarnArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M output error W log(error) (WARN+ allowed)', async () => {
@@ -254,7 +254,7 @@ it('M output error W log(error) (WARN+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(false);
     expect(baseConsoleWarnCalled).toStrictEqual(false);
     expect(baseConsoleErrorCalled).toStrictEqual(true);
-    expect(baseConsoleErrorArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleErrorArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M not output debug W log(debug) (ERROR+ allowed)', async () => {
@@ -315,7 +315,7 @@ it('M output error W log(error) (ERROR+ allowed)', async () => {
     expect(baseConsoleInfoCalled).toStrictEqual(false);
     expect(baseConsoleWarnCalled).toStrictEqual(false);
     expect(baseConsoleErrorCalled).toStrictEqual(true);
-    expect(baseConsoleErrorArg).toStrictEqual([`DATADOG: ${message}`]);
+    expect(baseConsoleErrorArg).toStrictEqual([`MOTADATA: ${message}`]);
 });
 
 it('M not output debug W log(debug) (none allowed)', async () => {

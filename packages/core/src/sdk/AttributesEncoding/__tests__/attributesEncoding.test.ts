@@ -4,7 +4,7 @@
  * Copyright 2016-Present Datadog, Inc.
  */
 
-import { DdSdk } from '../../DdSdk';
+import { MdSdk } from '../../MdSdk';
 import { encodeAttributes } from '../attributesEncoding';
 import { warn } from '../utils';
 
@@ -14,7 +14,7 @@ jest.mock('../utils', () => ({
 }));
 
 const setEncoders = (encoders: any[]) => {
-    (DdSdk as any)?._setAttributeEncodersForTesting(encoders);
+    (MdSdk as any)?._setAttributeEncodersForTesting(encoders);
 };
 
 describe('encodeAttributes', () => {

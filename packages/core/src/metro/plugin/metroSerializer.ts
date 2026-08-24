@@ -18,8 +18,8 @@ import {
 } from './debugIdHelper';
 import type {
     Bundle,
-    DatadogDebugIdModule,
-    DatadogMetroSerializer,
+    MotadataDebugIdModule,
+    MotadataMetroSerializer,
     MetroSerializer,
     MixedOutput,
     Module,
@@ -38,11 +38,11 @@ import {
  * This module injects the Debug ID at runtime, making it globally accessible.
  *
  * @param customSerializer - Optional custom {@link MetroSerializer}. If provided, you are responsible
- * for invoking `options.datadogBundleCallback` within it.
+ * for invoking `options.motadataBundleCallback` within it.
  */
-export const createDatadogMetroSerializer = (
+export const createMotadataMetroSerializer = (
     customSerializer?: MetroSerializer
-): DatadogMetroSerializer => {
+): MotadataMetroSerializer => {
     const serializer = customSerializer || createDefaultMetroSerializer();
     return async (entryPoint, preModules, graph, options) => {
         // Skip for hot reload mode, web builds and modulesOnly bundles
@@ -62,8 +62,8 @@ export const createDatadogMetroSerializer = (
         // Create a virtual module to inject the Debug ID in a globally accessible property
         const debugIdModule = createDebugIdModule(DEBUG_ID_PLACEHOLDER);
 
-        // Set the datadogBundleCallback in the options, to be used later by the serializer
-        options.datadogBundleCallback = createDatadogBundleCallback(
+        // Set the motadataBundleCallback in the options, to be used later by the serializer
+        options.motadataBundleCallback = createMotadataBundleCallback(
             debugIdModule
         );
 
@@ -84,11 +84,11 @@ export const createDatadogMetroSerializer = (
         // Get serialized code and sourcemap
         const { code, map } = await getMetroBundleWithMap(serializerOutput);
 
-        // Retrieve the Debug ID, previously injected as a snippet of code in a virtual module by `datadogBundleCallback`.
+        // Retrieve the Debug ID, previously injected as a snippet of code in a virtual module by `motadataBundleCallback`.
         const debugId = getDebugIdFromBundleSource(code);
         if (!debugId) {
             throw new Error(
-                '[DATADOG METRO PLUGIN] Debug ID was not found in the bundle. Call `options.datadogBundleCallback` if you are using a custom serializer.'
+                '[MOTADATA METRO PLUGIN] Debug ID was not found in the bundle. Call `options.motadataBundleCallback` if you are using a custom serializer.'
             );
         }
 
@@ -100,7 +100,7 @@ export const createDatadogMetroSerializer = (
 };
 
 /**
- * Creates a Metro Bundle Serializer like metro does by default, while also calling the datadogBundleCallback.
+ * Creates a Metro Bundle Serializer like metro does by default, while also calling the motadataBundleCallback.
  * https://github.com/facebook/metro/blob/a3d021a0d021b5706372059f472715c63019e044/packages/metro/src/Server.js#L272-L307
  */
 export const createDefaultMetroSerializer = (): MetroSerializer => {
@@ -110,12 +110,12 @@ export const createDefaultMetroSerializer = (): MetroSerializer => {
         const baseJSBundle = getBaseJSBundleFunction();
         let bundle = baseJSBundle(entryPoint, preModules, graph, options);
 
-        // Modify the bundle through the datadogBundleCallback, if we are not in hot-reload mode
+        // Modify the bundle through the motadataBundleCallback, if we are not in hot-reload mode
         if (
-            (options as any).datadogBundleCallback &&
+            (options as any).motadataBundleCallback &&
             !(graph.transformOptions as any).hot
         ) {
-            bundle = (options as any).datadogBundleCallback(bundle);
+            bundle = (options as any).motadataBundleCallback(bundle);
         }
 
         // Retrieves the processed code from the bundle
@@ -146,8 +146,8 @@ export const createDefaultMetroSerializer = (): MetroSerializer => {
  * @param debugIdModule - The virtual Debug ID module
  * @returns The bundle callback
  */
-export const createDatadogBundleCallback = (
-    debugIdModule: DatadogDebugIdModule
+export const createMotadataBundleCallback = (
+    debugIdModule: MotadataDebugIdModule
 ) => {
     return (bundle: Bundle) => {
         const debugId = createDebugIdFromBundle(bundle);

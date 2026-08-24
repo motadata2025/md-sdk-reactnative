@@ -5,7 +5,7 @@
  */
 
 /**
- * A value that can safely be encoded as a Datadog Attribute.
+ * A value that can safely be encoded as a Motadata Attribute.
  */
 export type Encodable =
     | string

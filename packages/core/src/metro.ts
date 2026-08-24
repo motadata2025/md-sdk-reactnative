@@ -4,11 +4,11 @@
  * Copyright 2016-Present Datadog, Inc.
  */
 import {
-    withDatadogMetroConfig,
-    getDatadogExpoConfig
+    withMotadataMetroConfig,
+    getMotadataExpoConfig
 } from './metro/plugin/metroConfig';
-import type { DatadogMetroConfigOptions } from './metro/plugin/metroConfig';
-import type { DatadogExpoConfigOptions } from './metro/plugin/types/expoTypes';
+import type { MotadataMetroConfigOptions } from './metro/plugin/metroConfig';
+import type { MotadataExpoConfigOptions } from './metro/plugin/types/expoTypes';
 
-export { withDatadogMetroConfig, getDatadogExpoConfig };
-export type { DatadogMetroConfigOptions, DatadogExpoConfigOptions };
+export { withMotadataMetroConfig, getMotadataExpoConfig };
+export type { MotadataMetroConfigOptions, MotadataExpoConfigOptions };

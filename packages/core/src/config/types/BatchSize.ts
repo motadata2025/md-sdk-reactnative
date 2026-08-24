@@ -5,7 +5,7 @@
  */
 
 /**
- * Enum specifying the Datadog SDK policy when batching data together before uploading it to Datadog servers.
+ * Enum specifying the Motadata SDK policy when batching data together before uploading it to Motadata servers.
  * Smaller batches mean smaller but more network requests, whereas larger batches mean fewer but larger network requests.
  */
 export enum BatchSize {

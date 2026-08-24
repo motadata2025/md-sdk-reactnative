@@ -7,14 +7,14 @@
 import { SdkVerbosity } from './config/types/SdkVerbosity';
 import { getGlobalInstance } from './utils/singletonUtils';
 
-export const DATADOG_MESSAGE_PREFIX = 'DATADOG:';
+export const MOTADATA_MESSAGE_PREFIX = 'MOTADATA:';
 
-const INTERNAL_LOG_MODULE = 'com.datadog.reactnative.internal_log';
+const INTERNAL_LOG_MODULE = 'com.motadata.reactnative.internal_log';
 
 /**
  * /!\ DO NOT USE THIS IN YOUR APP /!\\
  *
- * This logger is only for debugging the Datadog SDK.
+ * This logger is only for debugging the Motadata SDK.
  */
 class _InternalLog {
     private levelMap = new Map<SdkVerbosity, number>([
@@ -35,7 +35,7 @@ class _InternalLog {
         if (allowedLevel === undefined || requiredLevel === undefined) {
             return;
         }
-        const prefixedMessage = `${DATADOG_MESSAGE_PREFIX} ${message}`;
+        const prefixedMessage = `${MOTADATA_MESSAGE_PREFIX} ${message}`;
         if (verbosity === SdkVerbosity.ERROR && requiredLevel >= allowedLevel) {
             console.error(prefixedMessage);
         }
