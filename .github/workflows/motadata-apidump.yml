@@ -1,0 +1,37 @@
+name: Motadata RN SDK API Surface
+
+# Informational: builds the core package and snapshots the packaged (shipped) content
+# — the JS/TS public surface + native files that go to npm. Manual dispatch.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  apidump:
+    name: Snapshot core package contents
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Enable corepack (yarn 3.4.1)
+        run: corepack enable
+      - name: Install deps
+        run: yarn install --immutable
+      - name: Build all packages
+        run: yarn prepare
+      - name: Pack core and list contents
+        working-directory: packages/core
+        run: |
+          TARBALL=$(npm pack --silent)
+          echo "Packed: $TARBALL"
+          tar -tzf "$TARBALL" | sed 's#^package/##' | sort > api-surface.txt
+          echo "=== shipped contents ==="
+          cat api-surface.txt
+      - name: Upload API surface
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-api-surface
+          path: packages/core/api-surface.txt
+          if-no-files-found: warn

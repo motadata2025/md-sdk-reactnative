@@ -1,0 +1,44 @@
+name: Motadata No-Datadog Gate
+
+# Fails if any non-legal "datadog" token appears on a SHIPPED surface
+# (JS public source + Android core bridge source + package manifests).
+# The ONLY whitelisted occurrence is the Apache-2.0 attribution header.
+#
+# Phase 0: workflow_dispatch only — EXPECTED TO FAIL on the untouched 3.5.3 base.
+# Phase 1: this becomes push-triggered and must be green.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  no-datadog:
+    name: Grep shipped surfaces for datadog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan
+        run: |
+          set -uo pipefail
+          # Forbidden tokens on any shipped surface.
+          FORBIDDEN='datadog|dd-sdk|com\.datadoghq|ddsource|ddtags|_dd\.|DD-API-KEY|DD-EVP|DD-REQUEST|DD-IDEMPOTENCY'
+          # Legal exception: Apache-2.0 attribution header lines only.
+          WHITELIST='developed at Datadog|Datadog, Inc\.'
+
+          SCAN_PATHS="packages/core/src packages/core/android/src/main"
+          MANIFESTS="package.json packages/core/package.json"
+
+          matches=$(
+            { grep -rniE "$FORBIDDEN" $SCAN_PATHS 2>/dev/null || true; \
+              grep -niE "$FORBIDDEN" $MANIFESTS 2>/dev/null || true; } \
+            | grep -viE "$WHITELIST" || true
+          )
+
+          if [ -n "$matches" ]; then
+            echo "❌ Non-legal datadog references found on shipped surfaces:"
+            echo "-------------------------------------------------------------"
+            echo "$matches"
+            echo "-------------------------------------------------------------"
+            echo "Count: $(echo "$matches" | grep -c .)"
+            exit 1
+          fi
+          echo "✅ Zero non-legal datadog references on shipped surfaces."

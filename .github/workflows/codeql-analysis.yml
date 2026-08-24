@@ -2,10 +2,11 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "motadata-dev" ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "develop" ]
+    branches: [ "motadata-dev" ]
+  workflow_dispatch:
 
 jobs:
   analyze:

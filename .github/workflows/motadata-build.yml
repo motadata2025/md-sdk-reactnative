@@ -1,0 +1,57 @@
+name: Motadata RN SDK Build
+
+# Compile gate: JS build (all packages) + Android core AAR assemble.
+# CI-only per the golden rule — nothing compiles on the laptop.
+
+on:
+  push:
+    branches: [motadata-dev]
+  workflow_dispatch:
+
+jobs:
+  js-build:
+    name: JS build (yarn prepare)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Enable corepack (yarn 3.4.1)
+        run: corepack enable
+      - name: Install deps
+        run: yarn install --immutable
+      - name: Build all packages
+        run: yarn prepare
+
+  android-build:
+    name: Android core AAR (assembleRelease)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - name: Enable corepack (yarn 3.4.1)
+        run: corepack enable
+      - name: Install deps (needed for RN gradle deps)
+        run: yarn install --immutable
+      - name: Install required Android SDK components
+        run: |
+          SDKMGR="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMGR" --licenses >/dev/null 2>&1 || true
+          "$SDKMGR" "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+      - name: Assemble core AAR
+        working-directory: packages/core/android
+        run: ./gradlew assembleRelease -PDdSdkReactNative_minSdkVersion=24 --no-daemon --stacktrace
+      - name: Upload AAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-aar
+          path: packages/core/android/build/outputs/aar/*.aar
+          if-no-files-found: warn

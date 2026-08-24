@@ -1,0 +1,61 @@
+name: Motadata RN SDK Test
+
+# Behavior gate: JS lint + jest, Android core unit tests.
+
+on:
+  push:
+    branches: [motadata-dev]
+  workflow_dispatch:
+
+jobs:
+  js-test:
+    name: JS lint + jest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Enable corepack (yarn 3.4.1)
+        run: corepack enable
+      - name: Install deps
+        run: yarn install --immutable
+      - name: Lint
+        run: yarn lint
+      - name: Jest
+        run: |
+          cp jestSetup.js.override node_modules/react-native-gesture-handler/jestSetup.js
+          yarn test
+
+  android-test:
+    name: Android core unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - name: Enable corepack (yarn 3.4.1)
+        run: corepack enable
+      - name: Install deps (needed for RN gradle deps)
+        run: yarn install --immutable
+      - name: Install required Android SDK components
+        run: |
+          SDKMGR="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMGR" --licenses >/dev/null 2>&1 || true
+          "$SDKMGR" "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+      - name: Run core unit tests
+        working-directory: packages/core/android
+        run: ./gradlew testReleaseUnitTest -PDdSdkReactNative_minSdkVersion=24 --no-daemon --stacktrace
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-test-results
+          path: packages/core/android/build/reports/tests/**
+          if-no-files-found: warn
