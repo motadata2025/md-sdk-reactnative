@@ -1,6 +1,6 @@
 # Progress log
 
-## Phase 0 — Repo & CI bootstrap  (in progress, 2026-08-24)
+## Phase 0 — Repo & CI bootstrap  (DONE, 2026-08-24)
 - Studied Android reference (`md-sdk-android`) + upstream RN (`dd-sdk-reactnative`).
 - Locked decisions: fork base **RN 3.5.3** (Android 3.10.0); **RUM-only** scope; wire source
   **`mdsource=react-native`** (backend confirmed); publish to **public npmjs** as `@motadata/mobile-react-native`.
@@ -12,7 +12,7 @@
 - **Gate:** build + test green on the untouched 3.5.3 base (still DataDog-branded) before Phase 1.
   - `motadata-nodatadog` is EXPECTED RED here (base is DataDog) — dispatch-only until Phase 1.
 
-## Phase 1 — Rebrand / zero-datadog  (in progress, 2026-08-24)
+## Phase 1 — Rebrand / zero-datadog  (DONE, 2026-08-24)
 - Trimmed workspace to `packages/core` only (removed 9 sibling packages, example apps, benchmarks, entire iOS
   surface + podspec, stale datadog helper scripts). RUM-only: dropped Logs/Flags (JS classes + native), NDK,
   WebView passthrough; SessionReplay/WebView packages not shipped.
@@ -23,7 +23,12 @@
   whitelists Apache header only; `_dd.*` intentionally not forbidden. `TracingHeaderType.DATADOG` propagator case
   dropped (native enum keeps DATADOG; would collide with gate) — RN supports b3/b3multi/tracecontext.
 - Local no-datadog gate dry-run: PASS. TurboModule names consistent JS↔Kotlin.
-- Next: CI green (build+test+no-datadog) — iterating.
+- **CI GREEN (commit db6a6143):** Build (JS + Android AAR), Test (lint+jest + Android unit tests),
+  No-Datadog gate, CodeQL all pass. RN Kotlin/JS compiles against com.motadata:motadata-rum-android:1.0.1.
+- Iteration fixes applied: test forge factories dd/Dd→md/Md (native model rebranded); eslint autofix
+  (import-ordering + prettier) via motadata-lint-fix workflow; inlined jest native-module mocks (dropped
+  react-native-gesture-handler dep); rebranded __mocks__/react-native.ts to Md* module names.
+
 ## Phase 2 — Functional wiring / verification  (not started)
 
 ---
