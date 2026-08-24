@@ -6,9 +6,9 @@
 
 import { spawnSync } from 'child_process';
 
-it.skip('M call datadog-ci W android uploadReleaseSourcemaps', () => {
+it.skip('M call motadata-ci W android uploadReleaseSourcemaps', () => {
     // TODO this test requires the setup for the sample app and
-    // creating datadog-sourcemaps.properties file. Should be automated in the future.
+    // creating motadata-sourcemaps.properties file. Should be automated in the future.
     // WHEN
     const { stdout } = spawnSync('./gradlew uploadReleaseSourcemaps --info', {
         cwd: 'example/android',
@@ -18,7 +18,7 @@ it.skip('M call datadog-ci W android uploadReleaseSourcemaps', () => {
 
     // THEN
     expect(result).toContain(
-        'yarn datadog-ci react-native upload --platform android' +
+        'yarn motadata-ci react-native upload --platform android' +
             ' --service com.example.ddsdkreactnative'
     );
     expect(result).toContain(
