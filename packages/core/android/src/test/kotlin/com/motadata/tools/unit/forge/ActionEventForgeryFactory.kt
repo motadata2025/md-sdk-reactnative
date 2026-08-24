@@ -97,7 +97,7 @@ internal class ActionEventForgeryFactory :
             context = ActionEvent.Context(
                 additionalProperties = mutableMapOf()
             ),
-            dd = ActionEvent.Dd(
+            md = ActionEvent.Md(
                 session = forge.aNullable { ActionEvent.MdSession(getForgery()) },
                 browserSdkVersion = forge.aNullable { aStringMatching("\\d+\\.\\d+\\.\\d+") }
             )

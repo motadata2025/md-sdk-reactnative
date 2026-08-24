@@ -1,0 +1,41 @@
+name: Motadata Lint Autofix
+
+# Runs eslint --fix (import-ordering + prettier) and commits the result back to
+# the branch. CI-only autofix per the golden rule. Manual dispatch.
+# Note: commits pushed with GITHUB_TOKEN do NOT re-trigger push workflows, so
+# after this runs, dispatch motadata-build / motadata-test manually.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lint-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Enable corepack (yarn 3.4.1)
+        run: corepack enable
+      - name: Install deps
+        run: yarn install --no-immutable
+      - name: Generate version + eslint --fix
+        run: |
+          yarn genversion --es6 --semi packages/core/src/version.ts || npx genversion --es6 --semi packages/core/src/version.ts
+          npx eslint . --fix || true
+      - name: Commit fixes
+        run: |
+          git config user.name "motadata2025"
+          git config user.email "nikunj.claude@gmail.com"
+          if [ -n "$(git status --porcelain -- packages)" ]; then
+            git add packages
+            git commit -m "style: eslint --fix (import ordering + prettier) [skip ci]"
+            git push
+            echo "Committed lint fixes."
+          else
+            echo "No lint changes to commit."
+          fi

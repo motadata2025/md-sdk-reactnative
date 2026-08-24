@@ -105,7 +105,7 @@ internal class ResourceEventForgeryFactory :
             context = ResourceEvent.Context(
                 additionalProperties = mutableMapOf()
             ),
-            dd = ResourceEvent.Dd(
+            md = ResourceEvent.Md(
                 session = forge.aNullable { ResourceEvent.MdSession(getForgery()) },
                 browserSdkVersion = forge.aNullable { aStringMatching("\\d+\\.\\d+\\.\\d+") },
                 spanId = forge.aNullable { aNumericalString() },
