@@ -11,3 +11,22 @@
 global.performance.now = () => {
     return Date.now();
 };
+
+/**
+ * Native module mocks (previously provided via jestSetup.js.override copied into
+ * react-native-gesture-handler). Inlined here so the RUM-only core package does not
+ * depend on react-native-gesture-handler.
+ */
+const { NativeModules: RNNativeModules } = require('react-native');
+
+RNNativeModules.RNGestureHandlerModule = RNNativeModules.RNGestureHandlerModule || {
+    State: { BEGAN: 'BEGAN', FAILED: 'FAILED', ACTIVE: 'ACTIVE', END: 'END' },
+    attachGestureHandler: jest.fn(),
+    createGestureHandler: jest.fn(),
+    dropGestureHandler: jest.fn(),
+    updateGestureHandler: jest.fn()
+};
+
+RNNativeModules.PlatformConstants = RNNativeModules.PlatformConstants || {
+    forceTouchAvailable: false
+};

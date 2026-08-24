@@ -23,9 +23,7 @@ jobs:
       - name: Lint
         run: yarn lint
       - name: Jest
-        run: |
-          cp jestSetup.js.override node_modules/react-native-gesture-handler/jestSetup.js
-          yarn test
+        run: yarn test
 
   android-test:
     name: Android core unit tests
