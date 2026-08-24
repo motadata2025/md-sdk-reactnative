@@ -3,6 +3,7 @@
  * This product includes software developed at Datadog (https://www.datadoghq.com/).
  * Copyright 2016-Present Datadog, Inc.
  */
+import { NativeModules as RNNativeModules } from 'react-native';
 
 /**
  * In the tests, performance.now sometimes does not change as fast as Date.now.
@@ -17,8 +18,6 @@ global.performance.now = () => {
  * react-native-gesture-handler). Inlined here so the RUM-only core package does not
  * depend on react-native-gesture-handler.
  */
-const { NativeModules: RNNativeModules } = require('react-native');
-
 RNNativeModules.RNGestureHandlerModule = RNNativeModules.RNGestureHandlerModule || {
     State: { BEGAN: 'BEGAN', FAILED: 'FAILED', ACTIVE: 'ACTIVE', END: 'END' },
     attachGestureHandler: jest.fn(),
