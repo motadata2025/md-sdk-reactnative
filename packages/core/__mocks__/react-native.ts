@@ -62,7 +62,6 @@ actualRN.NativeModules.MdSdk = {
     }) as jest.MockedFunction<MdNativeSdkType['onRUMSessionStarted']>
 };
 
-
 actualRN.NativeModules.MdTrace = {
     startSpan: jest.fn().mockImplementation(
         () => new Promise<void>(resolve => resolve())
@@ -134,6 +133,5 @@ actualRN.NativeModules.MdRum = {
         () => new Promise<void>(resolve => resolve())
     ) as jest.MockedFunction<MdRumType['failFeatureOperation']>
 };
-
 
 module.exports = actualRN;
