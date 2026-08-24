@@ -6,10 +6,10 @@
 import React from 'react';
 import type { PropsWithChildren } from 'react';
 
-import { MdSdkReactNative } from '../../MdSdkReactNative';
 import { InternalLog } from '../../InternalLog';
-import { MotadataProviderConfiguration } from '../../config/MotadataProviderConfiguration';
+import { MdSdkReactNative } from '../../MdSdkReactNative';
 import type { FileBasedConfiguration } from '../../config/FileBasedConfiguration';
+import { MotadataProviderConfiguration } from '../../config/MotadataProviderConfiguration';
 import type { AutoInstrumentationConfiguration } from '../../config/async/AutoInstrumentationConfiguration';
 import type { PartialInitializationConfiguration } from '../../config/async/PartialInitializationConfiguration';
 import { CoreConfiguration } from '../../config/features/CoreConfiguration';

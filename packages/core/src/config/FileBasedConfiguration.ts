@@ -10,8 +10,8 @@ import type { ResourceEventMapper } from '../rum/eventMappers/resourceEventMappe
 import type { FirstPartyHost } from '../rum/types';
 import { PropagatorType } from '../rum/types';
 
-import { MotadataProviderConfiguration } from './MotadataProviderConfiguration';
 import type { JsonConfiguration } from './FileBasedConfiguration.type';
+import { MotadataProviderConfiguration } from './MotadataProviderConfiguration';
 import { CORE_DEFAULTS } from './features/CoreConfiguration';
 import { LogsConfiguration } from './features/LogsConfiguration';
 import { RUM_DEFAULTS, RumConfiguration } from './features/RumConfiguration';

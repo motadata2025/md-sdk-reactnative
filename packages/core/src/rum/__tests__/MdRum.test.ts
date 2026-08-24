@@ -10,9 +10,9 @@ import type { GestureResponderEvent } from 'react-native';
 
 import { InternalLog } from '../../InternalLog';
 import { SdkVerbosity } from '../../config/types';
-import { BufferSingleton } from '../../sdk/MotadataProvider/Buffer/BufferSingleton';
-import { NativeMdSdk } from '../../sdk/MdSdkInternal';
 import { GlobalState } from '../../sdk/GlobalState/GlobalState';
+import { NativeMdSdk } from '../../sdk/MdSdkInternal';
+import { BufferSingleton } from '../../sdk/MotadataProvider/Buffer/BufferSingleton';
 import { ErrorSource } from '../../types';
 import { MdRum } from '../MdRum';
 import type { ActionEventMapper } from '../eventMappers/actionEventMapper';

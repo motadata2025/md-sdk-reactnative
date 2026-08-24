@@ -12,10 +12,10 @@ import { getErrorMessage } from '../../../sdk/AttributesEncoding/errorUtils';
 import { NativeMdSdk } from '../../../sdk/MdSdkInternal';
 import { BABEL_PLUGIN_TELEMETRY } from '../../constants';
 
+import type { EventsInterceptor } from './EventsInterceptor';
 import { MdBabelInteractionTracking } from './MdBabelInteractionTracking';
 import type { MdEventsInterceptorOptions } from './MdEventsInterceptor';
 import { MdEventsInterceptor } from './MdEventsInterceptor';
-import type { EventsInterceptor } from './EventsInterceptor';
 import { NoOpEventsInterceptor } from './NoOpEventsInterceptor';
 import { areObjectShallowEqual } from './ShallowObjectEqualityChecker';
 import { getJsxRuntimes } from './getJsxRuntime';

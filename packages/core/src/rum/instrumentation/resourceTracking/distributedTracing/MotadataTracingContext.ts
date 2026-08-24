@@ -31,7 +31,9 @@ export class MotadataTracingContext {
         this.traceId = traceId
             ? new MotadataTracingIdentifier(traceId)
             : undefined;
-        this.spanId = spanId ? new MotadataTracingIdentifier(spanId) : undefined;
+        this.spanId = spanId
+            ? new MotadataTracingIdentifier(spanId)
+            : undefined;
     }
 
     /**

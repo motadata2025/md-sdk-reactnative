@@ -666,10 +666,14 @@ describe('XHRProxy', () => {
              * ========================================================================= */
 
             // x-motadata-trace-id is a decimal representing the low 64 bits of the 128 bits Trace ID
-            const xMotadataTraceId = xhr.requestHeaders.get(TRACE_ID_HEADER_KEY);
+            const xMotadataTraceId = xhr.requestHeaders.get(
+                TRACE_ID_HEADER_KEY
+            );
 
             expect(
-                TracingIdentifierUtils.isWithin64Bits(xMotadataTraceId as string)
+                TracingIdentifierUtils.isWithin64Bits(
+                    xMotadataTraceId as string
+                )
             );
 
             /* ===============================================================
@@ -798,7 +802,9 @@ describe('XHRProxy', () => {
             );
             expect(hexToDecimal(b3MultiParentHeader)).toBe(motadataParentValue);
 
-            expect(hexToDecimal(traceB3Value)).toBe(motadataTraceValue128BitDec);
+            expect(hexToDecimal(traceB3Value)).toBe(
+                motadataTraceValue128BitDec
+            );
             expect(hexToDecimal(parentB3Value)).toBe(motadataParentValue);
         });
 

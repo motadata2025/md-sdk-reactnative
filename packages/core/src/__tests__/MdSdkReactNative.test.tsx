@@ -21,8 +21,8 @@ import { MdRumUserInteractionTracking } from '../rum/instrumentation/interaction
 import { MdRumResourceTracking } from '../rum/instrumentation/resourceTracking/MdRumResourceTracking';
 import { PropagatorType, RumActionType } from '../rum/types';
 import { AttributesSingleton } from '../sdk/AttributesSingleton/AttributesSingleton';
-import { NativeMdSdk } from '../sdk/MdSdkInternal';
 import { GlobalState } from '../sdk/GlobalState/GlobalState';
+import { NativeMdSdk } from '../sdk/MdSdkInternal';
 import { UserInfoSingleton } from '../sdk/UserInfoSingleton/UserInfoSingleton';
 import { ErrorSource } from '../types';
 import { version as sdkVersion } from '../version';

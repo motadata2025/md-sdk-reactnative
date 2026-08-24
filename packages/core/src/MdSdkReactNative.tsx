@@ -8,8 +8,8 @@ import { version as reactNativeVersion } from 'react-native/package.json';
 import { InteractionManager } from 'react-native';
 
 import { InternalLog } from './InternalLog';
-import type { MotadataProviderConfiguration } from './config/MotadataProviderConfiguration';
 import { FileBasedConfiguration } from './config/FileBasedConfiguration';
+import type { MotadataProviderConfiguration } from './config/MotadataProviderConfiguration';
 import type {
     AutoInstrumentationConfiguration,
     AutoInstrumentationParameters
@@ -35,10 +35,10 @@ import { MdRumResourceTracking } from './rum/instrumentation/resourceTracking/Md
 import { AccountInfoSingleton } from './sdk/AccountInfoSingleton/AccountInfoSingleton';
 import { AttributesSingleton } from './sdk/AttributesSingleton/AttributesSingleton';
 import type { Attributes } from './sdk/AttributesSingleton/types';
+import { GlobalState } from './sdk/GlobalState/GlobalState';
+import { NativeMdSdk } from './sdk/MdSdkInternal';
 import { registerNativeBridge } from './sdk/MotadataInternalBridge/MdSdkInternalNativeBridge';
 import { BufferSingleton } from './sdk/MotadataProvider/Buffer/BufferSingleton';
-import { NativeMdSdk } from './sdk/MdSdkInternal';
-import { GlobalState } from './sdk/GlobalState/GlobalState';
 import { UserInfoSingleton } from './sdk/UserInfoSingleton/UserInfoSingleton';
 import type { UserInfo } from './sdk/UserInfoSingleton/types';
 import { adaptLongTaskThreshold } from './utils/longTasksUtils';

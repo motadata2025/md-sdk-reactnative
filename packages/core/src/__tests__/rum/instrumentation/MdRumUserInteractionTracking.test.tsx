@@ -20,8 +20,8 @@ import React from 'react';
 
 import type { MdNativeRumType } from '../../../nativeModulesTypes';
 import { MdRumUserInteractionTracking } from '../../../rum/instrumentation/interactionTracking/MdRumUserInteractionTracking';
-import { BufferSingleton } from '../../../sdk/MotadataProvider/Buffer/BufferSingleton';
 import { NativeMdSdk } from '../../../sdk/MdSdkInternal';
+import { BufferSingleton } from '../../../sdk/MotadataProvider/Buffer/BufferSingleton';
 
 const styles = StyleSheet.create({
     button: {

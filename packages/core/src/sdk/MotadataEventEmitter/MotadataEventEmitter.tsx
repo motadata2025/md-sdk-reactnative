@@ -7,6 +7,9 @@ export type MotadataEventEmitterCallback = (data: any) => void;
 
 export interface MotadataEventEmitter {
     initialize(): boolean;
-    addListener(eventName: string, callback: MotadataEventEmitterCallback): void;
+    addListener(
+        eventName: string,
+        callback: MotadataEventEmitterCallback
+    ): void;
     removeAllListeners(eventName: string): void;
 }

@@ -5,16 +5,16 @@
  */
 import type { GestureResponderEvent } from 'react-native';
 
-import { MdAttributes } from '../MdAttributes';
 import { InternalLog } from '../InternalLog';
+import { MdAttributes } from '../MdAttributes';
 import { SdkVerbosity } from '../config/types/SdkVerbosity';
 import { debugId } from '../metro/debugIdResolver';
 import type { MdNativeRumType } from '../nativeModulesTypes';
 import { encodeAttributes } from '../sdk/AttributesEncoding/attributesEncoding';
 import type { Attributes } from '../sdk/AttributesSingleton/types';
-import { bufferVoidNativeCall } from '../sdk/MotadataProvider/Buffer/bufferNativeCall';
-import { NativeMdSdk } from '../sdk/MdSdkInternal';
 import { GlobalState } from '../sdk/GlobalState/GlobalState';
+import { NativeMdSdk } from '../sdk/MdSdkInternal';
+import { bufferVoidNativeCall } from '../sdk/MotadataProvider/Buffer/bufferNativeCall';
 import type { ErrorSource, FeatureOperationFailure } from '../types';
 import { getGlobalInstance } from '../utils/singletonUtils';
 import { DefaultTimeProvider } from '../utils/time-provider/DefaultTimeProvider';

@@ -3,10 +3,10 @@
  * This product includes software developed at Datadog (https://www.datadoghq.com/).
  * Copyright 2016-Present Datadog, Inc.
  */
-import { MdSdkReactNative } from './MdSdkReactNative';
 import { InternalLog } from './InternalLog';
-import { MotadataProviderConfiguration } from './config/MotadataProviderConfiguration';
+import { MdSdkReactNative } from './MdSdkReactNative';
 import { FileBasedConfiguration } from './config/FileBasedConfiguration';
+import { MotadataProviderConfiguration } from './config/MotadataProviderConfiguration';
 import type { AutoInstrumentationConfiguration } from './config/async/AutoInstrumentationConfiguration';
 import type { PartialInitializationConfiguration } from './config/async/PartialInitializationConfiguration';
 import type { CoreConfigurationOptions } from './config/features/CoreConfiguration.type';
@@ -48,8 +48,8 @@ import {
 } from './rum/instrumentation/resourceTracking/graphql/graphqlHeaders';
 import type { FirstPartyHost } from './rum/types';
 import { PropagatorType, RumActionType } from './rum/types';
-import { MotadataProvider } from './sdk/MotadataProvider/MotadataProvider';
 import { MdSdk } from './sdk/MdSdk';
+import { MotadataProvider } from './sdk/MotadataProvider/MotadataProvider';
 import { MdTrace } from './trace/MdTrace';
 import { ErrorSource, FeatureOperationFailure } from './types';
 import { DefaultTimeProvider } from './utils/time-provider/DefaultTimeProvider';
