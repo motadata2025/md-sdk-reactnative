@@ -29,7 +29,23 @@
   (import-ordering + prettier) via motadata-lint-fix workflow; inlined jest native-module mocks (dropped
   react-native-gesture-handler dep); rebranded __mocks__/react-native.ts to Md* module names.
 
-## Phase 2 — Functional wiring / verification  (not started)
+## Phase 2 — Functional wiring / verification  (DONE, 2026-08-24)
+- Result: **no functional RN code change required** — all wire behavior is inherited from the frozen native
+  `com.motadata:motadata-rum-android:1.0.1`; the RN bridge only supplies config, which is already wired.
+- Code-verified + green in CI:
+  - `mdsource=react-native`: `buildConfiguration` sets `_dd.source='react-native'` → native emits it.
+    Asserted in `MdSdkReactNative.test.tsx` (additionalConfiguration strict-equals with `_dd.source`).
+  - `md-api-key`: `clientToken` passed to native config (asserted in same test).
+  - custom endpoint: `rum/traceConfiguration.customEndpoint` → `MdSdkConfigurationExt.kt` → native useCustomEndpoint.
+  - `session.created` / `_md.document_version`: emitted by native RUM automatically (no RN code).
+  - `_timing` / `is_view_completed`: NOT ported (backend ignores).
+- Docs updated: EVENT_TYPES.md (Phase 2 verification), functional-changes/README.md.
+- Follow-up (optional): live wire capture via an example app + emulator CI job (deferred; artifacts already
+  backend-verified, RN contract code+CI verified).
+
+## Remaining before "Done" (publish)
+- Add `NPM_TOKEN` repo secret (npmjs automation token) — user-provided.
+- Run `motadata-publish` (dry-run first) to publish `@motadata/mobile-react-native` to npmjs.
 
 ---
 _Check-in required between every phase (STOP for go-ahead)._

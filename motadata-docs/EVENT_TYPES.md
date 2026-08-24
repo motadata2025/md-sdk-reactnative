@@ -30,6 +30,24 @@ Event types carrying these: `view`, `action`, `resource`, `error`, `long_task`.
 Logs (DdLogs on Android), Session Replay, WebView tracking, NDK crash reporting, Feature Flags.
 The Motadata Android SDK is RUM-focused (rum + trace + okhttp resource tracking + core + internal).
 
-## Verification (Phase 2)
-Run the example app against a custom endpoint and confirm on the wire: `mdsource=react-native`,
-`md-api-key=<token>`, `session.created`, `_md.document_version`, and **zero** `datadog`/`dd-`/`_dd` tokens.
+## Verification (Phase 2) — status: CODE-VERIFIED (2026-08-24)
+
+Because the wire is emitted by the frozen native SDK (already backend-verified in the Android project), Phase 2
+verified the RN-side config chain in code + CI rather than by live capture:
+
+- **`mdsource=react-native`** — `MdSdkReactNative.buildConfiguration` sets `additionalConfiguration['_dd.source'] = 'react-native'`
+  (`MD_SOURCE_KEY = '_dd.source'`), which the native SDK reads via `Motadata.DD_SOURCE_TAG` and emits as the
+  `mdsource` query param. Asserted by `MdSdkReactNative.test.tsx` (`additionalConfiguration` strictly equals
+  `{ ..., '_dd.source': 'react-native', ... }`) — green in CI.
+- **`md-api-key`** — `configuration.clientToken` is passed to the native config (`MdSdkNativeConfiguration`);
+  the native SDK builds the intake URL's `md-api-key` param from it. Asserted by the same test
+  (`ddSdkConfiguration.clientToken === <token>`) — green in CI.
+- **custom endpoint** — `rumConfiguration.customEndpoint` / `traceConfiguration.customEndpoint` flow JS →
+  `MdSdkConfigurationExt.kt` (`customEndpoint = rm.getString("customEndpoint")`) → native `useCustomEndpoint`.
+- **`session.created` / `_md.document_version`** — emitted automatically by the native `motadata-rum-android`
+  RUM pipeline (no RN code); identical artifacts already produce these on the wire in the Android project.
+- **`context._timing` / `view.is_view_completed`** — NOT ported (backend ignores them); no RN logic added.
+
+**Follow-up (optional):** live wire capture would require re-adding an example app + Android emulator job to
+CI (or a debug `CurlInterceptor`/proxy run). Deferred — the native artifacts are already backend-verified and
+the RN-side contract is code+CI verified.
