@@ -43,9 +43,21 @@
 - Follow-up (optional): live wire capture via an example app + emulator CI job (deferred; artifacts already
   backend-verified, RN contract code+CI verified).
 
-## Remaining before "Done" (publish)
-- Add `NPM_TOKEN` repo secret (npmjs automation token) — user-provided.
-- Run `motadata-publish` (dry-run first) to publish `@motadata365/mobile-react-native` to npmjs.
+## Phase 3 — Publish  (DONE, 2026-08-25)
+- npm scope corrected `@motadata` → **`@motadata365`** (user's account `motadata365` owns that user-scope;
+  0 orgs, so `@motadata` would 403; matches their `@motadata365/browser-rum-react` web SDK). CI green @ a97572f6.
+- Tarball hygiene: `.npmignore` is inert under a `files` allowlist → switched to **files-array negation**
+  (`!src/**/__tests__/**`, `!src/**/*.test.*`, etc.) + `android/src/**`→`android/src/main/**`. Tarball
+  899 files / 327 kB packed / 1.8 MB unpacked (was 987 / 421 kB / 2.6 MB); 0 test files ship; android/src/main
+  bridge Kotlin ships. CI green @ e07e411a.
+- Dry-run (×3) green, then real publish green (run 32823635978).
+- **LIVE on npmjs: `@motadata365/mobile-react-native@1.0.0`** (tag `latest`, public). Verified via `npm view`
+  (tarball at registry.npmjs.org, unpackedSize 1,778,204).
+
+## ALL PHASES COMPLETE — "Done" criteria met
+- (a) zero non-legal datadog on shipped surfaces (gate green), (b) RN Android resolves com.motadata deps +
+  backend-compatible wire (inherited from frozen native 1.0.1), (c) build+tests green on CI, (d) npm published from CI.
+- Optional follow-ups NOT done (deferred): live wire capture; cosmetic lowercase `dd`/`__ddExtractText` rename; iOS.
 
 ---
 _Check-in required between every phase (STOP for go-ahead)._
