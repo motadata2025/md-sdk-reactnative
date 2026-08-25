@@ -89,8 +89,11 @@ export const motadataConfig = new MotadataProviderConfiguration(
       nativeCrashReportEnabled: true, // native (Android/JVM) crashes → crash events
       trackNonFatalAnrs: true,   // main-thread hangs → error events
       longTaskThresholdMs: 100,  // JS thread stalls > 100ms → long_task events
+      nativeLongTaskThresholdMs: 200, // native (Android) stalls > 200ms → long_task events
       sessionSampleRate: 100,    // % of SESSIONS sent (0–100); 100 = all. Lower to sample.
       useAccessibilityLabel: true, // use accessibilityLabel to name tap actions
+      // vitals (CPU / memory / refresh-rate) are ON by default (vitalsUpdateFrequency: 'AVERAGE')
+      // and ride on view events — no extra config needed.
     },
   },
 );
@@ -155,6 +158,25 @@ a RUM **view** event — no per-screen code.
 >
 > **Optional predicates** — `startTrackingViews` accepts a second `NavigationTrackingOptions` argument to
 > rename views, skip views, or filter navigation params. See the package README.
+
+---
+
+## Events produced (with the config above)
+Following this SOP exactly, **all RUM event types flow** — no extra app code beyond the snippets above:
+
+| Event | Produced by | Enabled by |
+|---|---|---|
+| **view** | screen / route changes | S‑3 auto tracking (`MdRumReactNavigationTracking.startTrackingViews`) |
+| **action** | taps, long-presses, clicks | `trackInteractions: true` |
+| **resource** | `fetch` / XHR network calls | `trackResources: true` |
+| **error** | JS errors + native (Android/JVM) crashes | `trackErrors: true` + `nativeCrashReportEnabled: true` |
+| **long_task** | JS stalls > 100ms, native stalls > 200ms | `longTaskThresholdMs: 100`, `nativeLongTaskThresholdMs: 200` |
+| **vital** | CPU, memory, refresh rate | ON by default (`vitalsUpdateFrequency: 'AVERAGE'`) |
+
+> **About vitals:** RUM has no standalone "vital" event — mobile vitals are collected automatically and
+> attached to **view** events as measurements (e.g. `view.cpu_ticks_per_second`, `view.memory_average`,
+> `view.refresh_rate_average`). They flow as long as `vitalsUpdateFrequency` is not `'NEVER'` (default is
+> `'AVERAGE'`), so no config is required.
 
 ---
 
