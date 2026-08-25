@@ -88,8 +88,19 @@ session-replay/webview/openfeature. Snippet rebranded for Motadata w/ on-prem `c
   NOT NDK — safe, no NDK artifact needed). Fixed cited API `setUser`→`setUserInfo`.
 - SOP verify section: `mdsource=react-native&md-api-key=`, MD-* headers, `_md` body, 200/202/401, dashboard.
 
-## Remaining
-- Phase 6: publish `@motadata365/mobile-react-navigation@1.0.0` (dry-run→real) + end-to-end verify.
+## Phase 6 — Publish navigation package  (DONE, 2026-08-25)
+- Made publish workflow idempotent (skip already-published versions via `npm view PKG@VER`) so the
+  multi-package publish re-runs cleanly (core@1.0.0 already live).
+- Dry-run green (both packages), then real publish (run 32850361788): core **skipped** (already live),
+  navigation **published**.
+- **LIVE on npmjs: `@motadata365/mobile-react-navigation@1.0.0`** (public, tag latest; verified via
+  `npm view` — tarball at registry.npmjs.org, unpackedSize 319,759). Real publish dispatched by the
+  user (auto-mode classifier blocks agent-triggered npm publish).
+
+## Both RN packages shipped — DataDog onboarding-flow parity achieved
+- `@motadata365/mobile-react-native@1.0.0` (core RUM) + `@motadata365/mobile-react-navigation@1.0.0`
+  (auto View tracking) — the two packages DataDog's official RN setup flow uses. Client SOP:
+  `motadata-docs/MOTADATA_REACTNATIVE_CLIENT_SOP.md`.
 - Deferred/optional: live wire capture; cosmetic lowercase `dd`/`__ddExtractText` rename; iOS.
 
 ---
