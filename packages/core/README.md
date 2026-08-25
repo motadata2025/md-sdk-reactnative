@@ -1,120 +1,105 @@
-# React-Native Monitoring
+# Motadata React Native Monitoring
 
-Datadog Real User Monitoring (RUM) enables you to visualize and analyze the real-time performance and user journeys of your application’s individual users.
+Motadata *Real User Monitoring (RUM)* enables you to visualize and analyze the real-time performance
+and user journeys of your application's individual users. This is the **core** package of the Motadata
+React Native RUM SDK (Android).
+
+> For automatic screen/View tracking with `react-navigation`, also install
+> [`@motadata365/mobile-react-navigation`](https://www.npmjs.com/package/@motadata365/mobile-react-navigation).
+>
+> **Full step-by-step integration guide:** see `MOTADATA_REACTNATIVE_CLIENT_SOP.md` in the
+> [repository](https://github.com/motadata2025/md-sdk-reactnative).
 
 ## Setup
 
 To install with NPM, run:
 
 ```sh
-npm install @datadog/mobile-react-native
+npm install @motadata365/mobile-react-native
 ```
 
 To install with Yarn, run:
 
 ```sh
-yarn add @datadog/mobile-react-native
+yarn add @motadata365/mobile-react-native
 ```
 
-**Minimum React Native version**: SDK supports React Native version 0.63.4 or higher. Compatibility with older versions is not guaranteed out of the box.
+**Requirements**: React Native `>=0.63.4 <1.0`, React `>=16.13.1`, Android `minSdkVersion >= 24`.
 
-Versions `1.0.0-rc5` and higher require you to have `compileSdkVersion = 31` in the Android application setup, which implies that you should use Build Tools version 31, Android Gradle Plugin version 7, and Gradle version 7 or higher. To modify the versions, change the values in the `buildscript.ext` block of your application's top-level `build.gradle` file. Datadog recommends using React Native version 0.67 or higher.
+### Prerequisites
 
-### Specify application details in UI
+From the client's Motadata org you need a **RUM application id** and a **client token**. The client
+token becomes the `md-api-key` on the wire — do not use a server-side API key in a mobile app.
 
-1. In the [Datadog app][1], select **UX Monitoring > RUM Applications > New Application**.
-2. Choose `react-native` as your Application Type.
-3. Provide a new application name to generate a unique Datadog application ID and client token.
+### Initialize the library
 
-![image][2]
-
-To ensure the safety of your data, you must use a client token. You cannot use only [Datadog API keys][3] to configure the `@datadog/mobile-react-native` library, because they would be exposed client-side. For more information about setting up a client token, see the [Client Token documentation][4].
-
-### Initialize the library with application context
+Point the SDK at your Motadata intake with `customEndpoint`. This is an Android RUM-only build.
 
 ```js
 import {
-    DatadogProvider,
-    DatadogProviderConfiguration
-} from '@datadog/mobile-react-native';
+    MotadataProvider,
+    MotadataProviderConfiguration,
+    TrackingConsent
+} from '@motadata365/mobile-react-native';
 
-const datadogConfiguration = new DatadogProviderConfiguration(
-    '<CLIENT_TOKEN>',
-    '<ENVIRONMENT_NAME>',
+const motadataConfiguration = new MotadataProviderConfiguration(
+    '<MOTADATA_CLIENT_TOKEN>',   // becomes md-api-key on the wire
+    '<ENVIRONMENT_NAME>',        // e.g. 'prod', 'staging', 'dev'
     TrackingConsent.GRANTED,
     {
-        rumConfiguration: {
-            applicationId: '<RUM_APPLICATION_ID>',
-            trackInteractions: true, // track User interactions (e.g.: Tap on buttons. You can use 'accessibilityLabel' element property to give tap action the name, otherwise element type will be reported)
-            trackResources: true, // track XHR Resources
-            trackFrustrations: true, // track Frustrations
-            trackErrors: true, // track errors
-            nativeCrashReportEnabled: true, // Optional: enable or disable native crash reports
-            sessionSampleRate: 80, // Optional: sample RUM sessions (here, 80% of session will be sent to Datadog. Default = 100%)
-            resourceTraceSampleRate: 80, // Optional: sample tracing integrations for network calls between your app and your backend (here, 80% of calls to your instrumented backend will be linked from the RUM view to the APM view. Default = 20%)
-            // You need to specify the hosts of your backends to enable tracing with these backends
-            firstPartyHosts: ['example.com'], // matches 'example.com' and subdomains like 'api.example.com'
+        additionalConfiguration: {
+            '_dd.needsClearTextHttp': true // HTTP endpoint only — remove for https://
         },
-        logsConfiguration: {
-            logEventMapper: logEvent => {
-                logEvent.message = `[CUSTOM] ${logEvent.message}`;
-                return logEvent;
-            }
+        rumConfiguration: {
+            applicationId: '<MOTADATA_RUM_APPLICATION_ID>',
+            customEndpoint: 'http://<your-motadata-host>:<port>/api/v2/rum/',
+            trackInteractions: true, // taps/clicks → action events
+            trackResources: true,    // XHR/fetch → resource events
+            trackErrors: true,       // JS errors → error events
+            nativeCrashReportEnabled: true, // native (Android/JVM) crashes → error events
+            trackNonFatalAnrs: true,
+            longTaskThresholdMs: 100,
+            sessionSampleRate: 100
         },
         traceConfiguration: {}
     }
 );
-// Optional: Select your Datadog website (one of "US1", "US3", "US5", "EU1", "AP1", "AP2", or "US1_FED"). Default is "US1".
-datadogConfiguration.site = 'US1';
-// Optional: set the reported service name (by default, it'll use the package name / bundleIdentifier of your Android / iOS app respectively)
-datadogConfiguration.service = 'com.example.reactnative';
-// Optional: let the SDK print internal logs (above or equal to the provided level. Default = undefined (meaning no logs))
-datadogConfiguration.verbosity = SdkVerbosity.WARN;
 
 export default function App() {
     return (
-        <DatadogProvider configuration={datadogConfiguration}>
+        <MotadataProvider configuration={motadataConfiguration}>
             <Navigation />
-        </DatadogProvider>
+        </MotadataProvider>
     );
 }
 ```
 
 ### Track view navigation
 
-Because React Native offers a wide range of libraries to create screen navigation, by default only manual View tracking is supported. You can manually start and stop a View using the following `startView()` and `stopView` methods.
+Views can be tracked automatically with
+[`@motadata365/mobile-react-navigation`](https://www.npmjs.com/package/@motadata365/mobile-react-navigation)
+(recommended). You can also start/stop Views manually:
 
 ```js
-import {
-    DdSdkReactNative,
-    DdSdkReactNativeConfiguration,
-    DdLogs,
-    DdRum
-} from '@datadog/mobile-react-native';
+import { MdRum } from '@motadata365/mobile-react-native';
 
-// Start a view with a unique view identifier, a custom view url, and an object to attach additional attributes to the view
-DdRum.startView('ViewKey', 'ViewName', Date.now(), {
-    'custom.foo': 'something'
-});
-// Stops a previously started view with the same unique view identifier, and an object to attach additional attributes to the view
-DdRum.stopView('ViewKey', Date.now(), { 'custom.bar': 42 });
+// Start a view with a unique view identifier, a custom view url, and additional attributes
+MdRum.startView('ViewKey', 'ViewName', Date.now(), { 'custom.foo': 'something' });
+// Stop a previously started view with the same identifier, and additional attributes
+MdRum.stopView('ViewKey', Date.now(), { 'custom.bar': 42 });
 ```
 
-## Data Storage
+## Scope
 
-### Android
+This build is **Android + RUM only** (views, actions, resources, errors, long tasks, native crashes,
+and distributed tracing). Logs, Session Replay, WebView tracking, NDK (C/C++) crash reporting, and
+Feature Flags are not included.
 
-Before data is uploaded to Datadog, it is stored in cleartext in your application's cache directory.
-This cache folder is protected by [Android's Application Sandbox][3], meaning that on most devices
-this data can't be read by other applications. However, if the mobile device is rooted, or someone
-tempers with the linux kernel, the stored data might become readable.
+## Data Storage (Android)
 
-### iOS
+Before data is uploaded to your Motadata endpoint, it is stored in cleartext in your application's cache
+directory. This cache folder is protected by [Android's Application Sandbox][1], meaning that on most
+devices this data can't be read by other applications. However, if the mobile device is rooted, or
+someone tampers with the linux kernel, the stored data might become readable.
 
-Before data is uploaded to Datadog, it is stored in cleartext in the cache directory (`Library/Caches`)
-of your [application sandbox][4], which can't be read by any other app installed on the device.
-
-[1]: https://app.datadoghq.com/rum/application/create
-[2]: https://raw.githubusercontent.com/DataDog/dd-sdk-reactnative/main/docs/image_reactnative.png
-[3]: https://source.android.com/security/app-sandbox
-[4]: https://support.apple.com/guide/security/security-of-runtime-process-sec15bfe098e/web
+[1]: https://source.android.com/security/app-sandbox

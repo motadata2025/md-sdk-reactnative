@@ -1,6 +1,6 @@
 {
     "name": "@motadata365/mobile-react-native",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A client-side React Native module to interact with Motadata",
     "keywords": [
         "motadata",

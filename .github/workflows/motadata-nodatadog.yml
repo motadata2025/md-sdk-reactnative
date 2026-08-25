@@ -31,7 +31,9 @@ jobs:
           WHITELIST='developed at Datadog|Datadog, Inc\.'
 
           SCAN_PATHS="packages/core/src packages/core/android/src packages/react-navigation/src"
-          SCAN_FILES="packages/core/android/build.gradle package.json packages/core/package.json packages/react-navigation/package.json lerna.json"
+          # NOTE: README.md files are always shipped by npm regardless of the package `files` array,
+          # so they are client-facing (npmjs page + node_modules) and MUST be scanned.
+          SCAN_FILES="packages/core/android/build.gradle package.json packages/core/package.json packages/react-navigation/package.json lerna.json packages/core/README.md packages/react-navigation/README.md"
 
           matches=$(
             { grep -rniE "$FORBIDDEN" $SCAN_PATHS 2>/dev/null || true; \
