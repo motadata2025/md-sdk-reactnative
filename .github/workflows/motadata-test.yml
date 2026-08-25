@@ -20,6 +20,8 @@ jobs:
         run: corepack enable
       - name: Install deps
         run: yarn install --no-immutable
+      - name: Fix react-navigation aliased imports (for react-navigation tests)
+        run: bash packages/react-navigation/fix-react-navigation-import-in-dependencies.sh
       - name: Lint
         run: yarn lint
       - name: Jest
