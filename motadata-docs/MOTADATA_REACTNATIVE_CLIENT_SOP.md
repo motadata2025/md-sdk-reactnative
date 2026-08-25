@@ -4,11 +4,11 @@ How to add the **Motadata React Native RUM SDK** to a React Native (Android) app
 to a Motadata custom endpoint (HTTP or HTTPS). Three steps: **S‑1 Install → S‑2 Initialize (config +
 provider) → S‑3 Auto view tracking (react-navigation)**.
 
-> This is the **canonical client SOP**. Packages (current version **`1.0.0`**, distributed via **npm**):
-> - `@motadata365/mobile-react-native` — the core RUM SDK
-> - `@motadata365/mobile-react-navigation` — automatic View tracking for `react-navigation`
+> This is the **canonical client SOP**. Packages (distributed via **npm**; install pulls the latest):
+> - `@motadata365/mobile-react-native` — the core RUM SDK (current **`1.0.1`**)
+> - `@motadata365/mobile-react-navigation` — automatic View tracking for `react-navigation` (current **`1.0.0`**)
 
-> **What `1.0.0` includes** (all **automatic — no extra app code**):
+> **What the SDK includes** (all **automatic — no extra app code**):
 > - **`md-api-key` query param** on every request (the param your Motadata intake authenticates on)
 > - **`mdsource=react-native`** query param (identifies the SDK platform)
 > - **`session.created`** (epoch‑ms) and **`_md.document_version`** on view state
