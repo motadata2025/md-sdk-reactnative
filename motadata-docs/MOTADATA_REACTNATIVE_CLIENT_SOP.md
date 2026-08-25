@@ -162,21 +162,25 @@ a RUM **view** event — no per-screen code.
 ---
 
 ## Events produced (with the config above)
-Following this SOP exactly, **all RUM event types flow** — no extra app code beyond the snippets above:
+Following this SOP exactly, these RUM event types flow — no extra app code beyond the snippets above:
 
-| Event | Produced by | Enabled by |
+| `type` | Produced by | Enabled by |
 |---|---|---|
 | **view** | screen / route changes | S‑3 auto tracking (`MdRumReactNavigationTracking.startTrackingViews`) |
-| **action** | taps, long-presses, clicks | `trackInteractions: true` |
+| **action** | taps, long-presses | `trackInteractions: true` |
 | **resource** | `fetch` / XHR network calls | `trackResources: true` |
 | **error** | JS errors + native (Android/JVM) crashes | `trackErrors: true` + `nativeCrashReportEnabled: true` |
 | **long_task** | JS stalls > 100ms, native stalls > 200ms | `longTaskThresholdMs: 100`, `nativeLongTaskThresholdMs: 200` |
-| **vital** | CPU, memory, refresh rate | ON by default (`vitalsUpdateFrequency: 'AVERAGE'`) |
 
-> **About vitals:** RUM has no standalone "vital" event — mobile vitals are collected automatically and
-> attached to **view** events as measurements (e.g. `view.cpu_ticks_per_second`, `view.memory_average`,
-> `view.refresh_rate_average`). They flow as long as `vitalsUpdateFrequency` is not `'NEVER'` (default is
-> `'AVERAGE'`), so no config is required.
+> **⚠️ There is NO standalone `type: "vital"` event on React Native.** Performance vitals (CPU, memory,
+> refresh rate, JS refresh rate) **do** flow — but as **fields on `view` events**
+> (`view.cpu_ticks_per_second`, `view.memory_average`, `view.refresh_rate_average`, `view.js_refresh_rate.*`),
+> not as separate events. They are on by default (`vitalsUpdateFrequency: 'AVERAGE'`).
+>
+> The native Android SDK additionally emits an `app_launch` (TTID) event of `type: "vital"`, but the React
+> Native layer does **not** bridge it to JS — so **RN produces zero `type: "vital"` events** (this matches
+> real field captures for the equivalent DataDog SDK versions this fork is based on). On React Native,
+> app-launch timing is only visible as the synthetic **`ApplicationLaunch`** view's `view.time_spent`.
 
 ---
 
