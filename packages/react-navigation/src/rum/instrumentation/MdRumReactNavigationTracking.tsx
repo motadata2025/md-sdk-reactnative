@@ -4,7 +4,11 @@
  * Copyright 2016-Present Datadog, Inc.
  */
 
-import { MdRum, SdkVerbosity, InternalLog } from '@motadata365/mobile-react-native';
+import {
+    MdRum,
+    SdkVerbosity,
+    InternalLog
+} from '@motadata365/mobile-react-native';
 import type { AppStateStatus, NativeEventSubscription } from 'react-native';
 import { AppState, BackHandler } from 'react-native';
 
