@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@motadata/mobile-react-native": [
+      "@motadata365/mobile-react-native": [
         "./packages/core/src"
       ]
     },

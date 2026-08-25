@@ -4,8 +4,8 @@
 
 ## Install
 ```bash
-npm install @motadata/mobile-react-native
-# or: yarn add @motadata/mobile-react-native
+npm install @motadata365/mobile-react-native
+# or: yarn add @motadata365/mobile-react-native
 ```
 
 ## Android native dependency
@@ -26,7 +26,7 @@ Ensure `mavenCentral()` is in your app's repositories (default for RN apps).
 
 ## Initialize (shape mirrors upstream; names rebranded in Phase 1)
 ```ts
-import { MotadataProvider, MotadataProviderConfiguration } from '@motadata/mobile-react-native';
+import { MotadataProvider, MotadataProviderConfiguration } from '@motadata365/mobile-react-native';
 
 const config = new MotadataProviderConfiguration(
   '<CLIENT_TOKEN>',   // becomes md-api-key

@@ -1,5 +1,5 @@
 {
-    "name": "@motadata/mobile-react-native",
+    "name": "@motadata365/mobile-react-native",
     "version": "1.0.0",
     "description": "A client-side React Native module to interact with Motadata",
     "keywords": [
@@ -70,8 +70,8 @@
     "jest": {
         "preset": "react-native",
         "moduleNameMapper": {
-            "@motadata/mobile-react-native": "<rootDir>../core/src",
-            "@motadata/mobile-react-native/metro": "<rootDir>../core/src/metro"
+            "@motadata365/mobile-react-native": "<rootDir>../core/src",
+            "@motadata365/mobile-react-native/metro": "<rootDir>../core/src/metro"
         },
         "modulePathIgnorePatterns": [
             "<rootDir>/lib/"

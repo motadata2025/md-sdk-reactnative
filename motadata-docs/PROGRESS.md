@@ -3,7 +3,7 @@
 ## Phase 0 — Repo & CI bootstrap  (DONE, 2026-08-24)
 - Studied Android reference (`md-sdk-android`) + upstream RN (`dd-sdk-reactnative`).
 - Locked decisions: fork base **RN 3.5.3** (Android 3.10.0); **RUM-only** scope; wire source
-  **`mdsource=react-native`** (backend confirmed); publish to **public npmjs** as `@motadata/mobile-react-native`.
+  **`mdsource=react-native`** (backend confirmed); publish to **public npmjs** as `@motadata365/mobile-react-native`.
 - Created repo `motadata2025/md-sdk-reactnative`; base = upstream `3.5.3` tree; single branch `motadata-dev`;
   remotes `origin`=Motadata, `upstream`=DataDog.
 - Authored CI: `motadata-build`, `motadata-test`, `motadata-nodatadog`, `motadata-apidump`,
@@ -16,7 +16,7 @@
 - Trimmed workspace to `packages/core` only (removed 9 sibling packages, example apps, benchmarks, entire iOS
   surface + podspec, stale datadog helper scripts). RUM-only: dropped Logs/Flags (JS classes + native), NDK,
   WebView passthrough; SessionReplay/WebView packages not shipped.
-- Rebranded JS + Android: `@datadog/mobile-react-native`→`@motadata/mobile-react-native`, `Datadog`→`Motadata`,
+- Rebranded JS + Android: `@datadog/mobile-react-native`→`@motadata365/mobile-react-native`, `Datadog`→`Motadata`,
   `Dd`→`Md` (incl. TurboModule keys MdSdk/MdRum/MdTrace), package `com.datadog.reactnative`→`com.motadata.reactnative`.
 - Repointed Android Gradle deps to `com.motadata:motadata-rum-android:1.0.1` (+ `-trace`), verified on Maven Central.
 - Kept `_dd.*` contract keys (frozen native SDK reads them; native does the `_dd`→`_md` wire rebrand). Gate
@@ -45,7 +45,7 @@
 
 ## Remaining before "Done" (publish)
 - Add `NPM_TOKEN` repo secret (npmjs automation token) — user-provided.
-- Run `motadata-publish` (dry-run first) to publish `@motadata/mobile-react-native` to npmjs.
+- Run `motadata-publish` (dry-run first) to publish `@motadata365/mobile-react-native` to npmjs.
 
 ---
 _Check-in required between every phase (STOP for go-ahead)._

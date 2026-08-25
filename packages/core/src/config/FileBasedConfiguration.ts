@@ -123,10 +123,10 @@ const resolveJSONConfiguration = (
 ): Record<string, any> => {
     if (typeof userSpecifiedConfiguration !== 'object') {
         console.error(`Failed to parse the Motadata configuration file you provided.
-Your configuration must validate the node_modules/@motadata/mobile-react-native/motadata-configuration.schema.json JSON schema.
+Your configuration must validate the node_modules/@motadata365/mobile-react-native/motadata-configuration.schema.json JSON schema.
 You can use VSCode to check your configuration by adding the following line to your JSON file:
 {
-    "$schema": "./node_modules/@motadata/mobile-react-native/motadata-configuration.schema.json",
+    "$schema": "./node_modules/@motadata365/mobile-react-native/motadata-configuration.schema.json",
 }`);
 
         return {};

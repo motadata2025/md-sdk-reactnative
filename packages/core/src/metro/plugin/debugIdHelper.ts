@@ -226,7 +226,7 @@ export const injectDebugIdInCodeAndSourceMap = (
 const writeDebugIdToFile = (debugId: string): void => {
     try {
         const motadataPackageJsonPath = require.resolve(
-            '@motadata/mobile-react-native/package.json'
+            '@motadata365/mobile-react-native/package.json'
         );
         const motadataTmpDir = path.join(
             path.dirname(motadataPackageJsonPath),

@@ -24,7 +24,7 @@ import { getJsxRuntimes } from './getJsxRuntime';
  * Provides RUM auto-instrumentation feature to track user interaction as RUM events.
  * For now we are only covering the "onPress" events.
  *
- * @deprecated since 3.0.0 – Use `@motadata/mobile-react-native-babel-plugin` instead.
+ * @deprecated since 3.0.0 – Use `@motadata365/mobile-react-native-babel-plugin` instead.
  */
 export class MdRumUserInteractionTracking {
     private static isTracking = false;
@@ -69,7 +69,7 @@ export class MdRumUserInteractionTracking {
     static startTracking(options: MdEventsInterceptorOptions): void {
         InternalLog.log(
             '[DEPRECATED] Interaction tracking via the core React Native SDK has been deprecated since v3.0.0. ' +
-                'Please migrate to @motadata/mobile-react-native-babel-plugin: https://www.npmjs.com/package/@motadata/mobile-react-native-babel-plugin.',
+                'Please migrate to @motadata365/mobile-react-native-babel-plugin: https://www.npmjs.com/package/@motadata365/mobile-react-native-babel-plugin.',
             SdkVerbosity.WARN
         );
 

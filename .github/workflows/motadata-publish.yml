@@ -1,6 +1,6 @@
 name: Motadata RN SDK Publish (npm)
 
-# Publishes the core package (@motadata/mobile-react-native) to public npmjs.
+# Publishes the core package (@motadata365/mobile-react-native) to public npmjs.
 # Manual dispatch only. Requires repo secret NPM_TOKEN (npmjs automation token).
 # Used in Phase 2 — not run during Phase 0/1 bootstrap.
 

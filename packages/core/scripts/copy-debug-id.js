@@ -7,7 +7,7 @@ const { argv, exit } = require('process');
 
 const [, , packagerPath, composedPath] = argv;
 
-const TAG = '[@motadata/mobile-react-native]';
+const TAG = '[@motadata365/mobile-react-native]';
 
 const warnAndExit = message => {
     console.log(`\n${TAG} WARNING: ${message}\n`);

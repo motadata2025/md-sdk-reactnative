@@ -23,7 +23,7 @@ function loadDebugId() {
         if (!hasDebugId) {
             if (shouldWarn) {
                 console.warn(
-                    '[Motadata SDK] Debug ID not found. Are you using @motadata/mobile-react-native/metro config?'
+                    '[Motadata SDK] Debug ID not found. Are you using @motadata365/mobile-react-native/metro config?'
                 );
             }
             return;
@@ -33,7 +33,7 @@ function loadDebugId() {
     } catch (error) {
         if (shouldWarn) {
             console.warn(
-                '[Motadata SDK] Error while retrieving Debug ID. Are you using @motadata/mobile-react-native/metro config?'
+                '[Motadata SDK] Error while retrieving Debug ID. Are you using @motadata365/mobile-react-native/metro config?'
             );
         }
     }

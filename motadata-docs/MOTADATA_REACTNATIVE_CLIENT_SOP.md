@@ -8,7 +8,7 @@
 - Android `minSdk >= 24`, `mavenCentral()` in repositories.
 
 ## Steps
-1. `npm install @motadata/mobile-react-native`.
+1. `npm install @motadata365/mobile-react-native`.
 2. Initialize early in app startup (see ONBOARDING) with `clientToken`, `env`, `applicationId`,
    and `customEndpoint`.
 3. Build & run the Android app. RUM sessions start automatically.

@@ -6,7 +6,7 @@
 > (2) **RUM-only** — remove Logs/NDK/Flags; don't ship SessionReplay/WebView packages.
 > (3) Wire source = **`mdsource=react-native`** (keep RN's distinct source; ⚠ requires backend to accept
 > `react-native` — this deviates from the original DoD `mdsource=android`; see Risk #3).
-> (4) npm publish → **public npmjs** as `@motadata/mobile-react-native` (needs `NPM_TOKEN` secret, user-provided).
+> (4) npm publish → **public npmjs** as `@motadata365/mobile-react-native` (needs `NPM_TOKEN` secret, user-provided).
 > Target repo: `motadata2025/md-sdk-reactnative` (does not exist yet — created in Phase 0).
 > Single working branch: **`motadata-dev`** (rebrand + functional both land here).
 > Upstream (read-only ancestry): `DataDog/dd-sdk-reactnative`.
@@ -164,7 +164,7 @@ reach the wire. `_timing` and `is_view_completed` are **not ported** (backend ig
 - **Gate:** build + tests green on the untouched base before Phase 1.
 
 ### Phase 1 — Rebrand / "zero datadog" (branch `motadata-dev`)
-- npm scope/name `@datadog/mobile-react-native` → `@motadata/mobile-react-native` (+ internal refs).
+- npm scope/name `@datadog/mobile-react-native` → `@motadata365/mobile-react-native` (+ internal refs).
 - JS/TS symbols, imports, `_dd`→`_md`, `DD-*`→`MD-*`, `ddsource`→`mdsource`, `ddtags`→`mdtags`,
   User-Agent/log strings; keep Apache-2.0 header.
 - Native Android bridge: package/namespace `com.datadog.reactnative`→`com.motadata.reactnative`, class
@@ -203,7 +203,7 @@ reach the wire. `_timing` and `is_view_completed` are **not ported** (backend ig
    DoD (`mdsource=android`). Requires the Motadata backend intake to accept `react-native` as a valid
    `mdsource`. **Must confirm with backend before/at Phase 2 wire verification** — if the backend rejects
    or drops `react-native`-sourced events, we revisit this decision.
-4. **npm publish = public npmjs**, package `@motadata/mobile-react-native`. ✅ LOCKED. Needs an
+4. **npm publish = public npmjs**, package `@motadata365/mobile-react-native`. ✅ LOCKED. Needs an
    `NPM_TOKEN` org automation secret on the repo — **user to provide** before the publish step.
 5. **Version-skew residual risk:** even at 3.5.3 there may be minor bridge fixups after removing gap
    modules; caught by the CI build in Phase 1.

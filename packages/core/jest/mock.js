@@ -8,7 +8,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const React = require('react');
 
-const actualMotadata = jest.requireActual('@motadata/mobile-react-native');
+const actualMotadata = jest.requireActual('@motadata365/mobile-react-native');
 
 /**
  * Explicitly mocking the provider prevents auto-instrumentation in tests.
