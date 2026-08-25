@@ -97,11 +97,21 @@ session-replay/webview/openfeature. Snippet rebranded for Motadata w/ on-prem `c
   `npm view` — tarball at registry.npmjs.org, unpackedSize 319,759). Real publish dispatched by the
   user (auto-mode classifier blocks agent-triggered npm publish).
 
-## Both RN packages shipped — DataDog onboarding-flow parity achieved
-- `@motadata365/mobile-react-native@1.0.0` (core RUM) + `@motadata365/mobile-react-navigation@1.0.0`
-  (auto View tracking) — the two packages DataDog's official RN setup flow uses. Client SOP:
+## Phase 7 — Client-facing rebrand audit + README fix  (DONE, 2026-08-25)
+- Audited the ACTUAL published npm tarballs (not just repo). Public API/code fully Motadata (zero
+  `DatadogProvider`/`DdRum` public exports). **Found one real leak:** `packages/core/README.md` was still
+  the DataDog original — and **npm always ships README.md regardless of the `files` array**, so it was
+  client-facing (npmjs page + node_modules). The no-datadog gate had missed it (only scanned src/manifests).
+- Fix: rewrote core README (Motadata, RUM-only, customEndpoint, links SOP); **extended gate to scan
+  README.md files**; bumped core → **1.0.1** (1.0.0 immutable). Nav README was already clean.
+- Republished: **`@motadata365/mobile-react-native@1.0.1`** now `latest` (verified: published README has 0
+  datadog refs, first line "# Motadata React Native Monitoring"). Nav stays 1.0.0 (skipped by idempotent guard).
+
+## Shipped state (npm `latest`)
+- `@motadata365/mobile-react-native@1.0.1` (core RUM) + `@motadata365/mobile-react-navigation@1.0.0`
+  (auto View tracking) — DataDog RN onboarding-flow parity. Client SOP:
   `motadata-docs/MOTADATA_REACTNATIVE_CLIENT_SOP.md`.
-- Deferred/optional: live wire capture; cosmetic lowercase `dd`/`__ddExtractText` rename; iOS.
+- Deferred/optional: live wire capture; cosmetic lowercase `dd`/`__ddExtractText`/`ddRum` rename; iOS.
 
 ---
 _Check-in required between every phase (STOP for go-ahead)._
