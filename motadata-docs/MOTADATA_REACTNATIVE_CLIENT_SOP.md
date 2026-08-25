@@ -15,9 +15,13 @@ provider) → S‑3 Auto view tracking (react-navigation)**.
 > - **view, action, resource, error, long_task, and crash** events, each carrying the Motadata `_md` envelope
 
 ## Prerequisites
-- A React Native app targeting **Android** (`minSdkVersion` ≥ 24 — the React Native default).
-- [`react-navigation`](https://reactnavigation.org/) already installed and set up in your app
-  (`@react-navigation/native` + its peers). Auto view tracking (S‑3) attaches to it.
+- A React Native app targeting **Android**. Required versions (SDK peer dependencies):
+  - **React Native** `>=0.63.4 <1.0`
+  - **React** `>=16.13.1`
+  - Android **`minSdkVersion` ≥ 24** (React Native's default; the native SDK itself needs ≥ 23).
+- [`react-navigation`](https://reactnavigation.org/) already installed and set up in your app — **v5 or v6**
+  (`@react-navigation/native` + a navigator such as `@react-navigation/stack`, and their peers like
+  `react-native-screens` / `react-native-safe-area-context`). Auto view tracking (S‑3) attaches to it.
 - From the client's Motadata org: **RUM application id** and **client token**.
 - **No credentials needed to fetch the SDK** — the JS packages are on **public npm** (no auth token),
   and the Android native SDK is on **Maven Central** (a default Gradle repository — no GitHub PAT).
