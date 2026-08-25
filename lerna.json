@@ -2,7 +2,8 @@
   "npmClient": "yarn",
   "version": "1.0.0",
   "packages": [
-    "packages/core"
+    "packages/core",
+    "packages/react-navigation"
   ],
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

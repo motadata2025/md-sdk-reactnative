@@ -1,0 +1,95 @@
+{
+    "name": "@motadata365/mobile-react-navigation",
+    "version": "1.0.0",
+    "description": "Motadata RUM integration for the react-navigation library (automatic View tracking).",
+    "keywords": [
+        "motadata",
+        "rum",
+        "react-native",
+        "react-navigation",
+        "android"
+    ],
+    "author": "Motadata",
+    "homepage": "https://github.com/motadata2025/md-sdk-reactnative#readme",
+    "repository": {
+        "url": "https://github.com/motadata2025/md-sdk-reactnative",
+        "directory": "packages/react-navigation"
+    },
+    "bugs": {
+        "url": "https://github.com/motadata2025/md-sdk-reactnative/issues"
+    },
+    "license": "Apache-2.0",
+    "main": "lib/commonjs/index",
+    "files": [
+        "src/**",
+        "!src/**/__tests__/**",
+        "!src/**/__mocks__/**",
+        "!src/**/__snapshots__/**",
+        "!src/**/*.test.ts",
+        "!src/**/*.test.tsx",
+        "!src/**/*.test.js",
+        "!src/**/*.spec.ts",
+        "!src/**/*.spec.tsx",
+        "lib/**"
+    ],
+    "types": "lib/typescript/react-navigation/src/index.d.ts",
+    "react-native": "src/index",
+    "source": "src/index",
+    "module": "lib/module/index",
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "test": "jest",
+        "lint": "eslint .",
+        "prepare": "rm -rf lib && yarn bob build"
+    },
+    "devDependencies": {
+        "@motadata365/mobile-react-native": "^1.0.0",
+        "@react-navigation/native-v5": "npm:@react-navigation/native@5.9.8",
+        "@react-navigation/native-v6": "npm:@react-navigation/native@6.1.2",
+        "@react-navigation/stack-v5": "npm:@react-navigation/stack@5.14.2",
+        "@react-navigation/stack-v6": "npm:@react-navigation/stack@6.2.1",
+        "@testing-library/react-native": "7.0.2",
+        "react-native-builder-bob": "0.26.0",
+        "react-native-gesture-handler": "1.10.3",
+        "react-native-safe-area-context": "3.1.9"
+    },
+    "peerDependencies": {
+        "@motadata365/mobile-react-native": "^1.0.0",
+        "react": ">=16.13.1",
+        "react-native": ">=0.63.4 <1.0"
+    },
+    "jest": {
+        "preset": "react-native",
+        "moduleNameMapper": {
+            "@motadata365/mobile-react-native": "<rootDir>../core/src"
+        },
+        "modulePathIgnorePatterns": [
+            "<rootDir>/lib/"
+        ],
+        "setupFiles": [
+            "./../../node_modules/react-native-gesture-handler/jestSetup.js"
+        ],
+        "testPathIgnorePatterns": [
+            "/__utils__/"
+        ],
+        "transformIgnorePatterns": [
+            "jest-runner"
+        ]
+    },
+    "react-native-builder-bob": {
+        "source": "src",
+        "output": "lib",
+        "targets": [
+            "commonjs",
+            "module",
+            [
+                "typescript",
+                {
+                    "tsc": "./../../node_modules/.bin/tsc"
+                }
+            ]
+        ]
+    }
+}

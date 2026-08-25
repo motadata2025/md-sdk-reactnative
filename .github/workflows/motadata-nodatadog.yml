@@ -30,8 +30,8 @@ jobs:
           # Legal exception: Apache-2.0 attribution header lines only.
           WHITELIST='developed at Datadog|Datadog, Inc\.'
 
-          SCAN_PATHS="packages/core/src packages/core/android/src"
-          SCAN_FILES="packages/core/android/build.gradle package.json packages/core/package.json lerna.json"
+          SCAN_PATHS="packages/core/src packages/core/android/src packages/react-navigation/src"
+          SCAN_FILES="packages/core/android/build.gradle package.json packages/core/package.json packages/react-navigation/package.json lerna.json"
 
           matches=$(
             { grep -rniE "$FORBIDDEN" $SCAN_PATHS 2>/dev/null || true; \

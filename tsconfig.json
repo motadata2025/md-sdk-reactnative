@@ -4,6 +4,9 @@
     "paths": {
       "@motadata365/mobile-react-native": [
         "./packages/core/src"
+      ],
+      "@motadata365/mobile-react-navigation": [
+        "./packages/react-navigation/src"
       ]
     },
     "declaration": true,

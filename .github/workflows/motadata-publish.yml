@@ -38,3 +38,13 @@ jobs:
           else
             npm publish --access public
           fi
+      - name: Publish react-navigation
+        working-directory: packages/react-navigation
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            npm publish --access public --dry-run
+          else
+            npm publish --access public
+          fi
