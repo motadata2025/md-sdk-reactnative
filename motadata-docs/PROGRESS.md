@@ -77,8 +77,18 @@ session-replay/webview/openfeature. Snippet rebranded for Motadata w/ on-prem `c
   step to test workflow (stack-v5/v6 alias `@react-navigation/native`→native-v5/v6).
 - **CI GREEN**: Build ✅ Test ✅ (675 tests, +76 nav, suite PASS) No-Datadog ✅ CodeQL ✅. NOT yet published.
 
+## Phase 5 — Rebranded snippet + Client SOP  (DONE, 2026-08-25)
+- Rewrote `motadata-docs/MOTADATA_REACTNATIVE_CLIENT_SOP.md` mirroring the Android SOP structure
+  (Prerequisites → S-1 Install → S-2 Initialize [config file + provider] → S-3 Auto view tracking → Verify → Notes).
+- Snippet derived from the client's real reference app (`~/Documents/react-native-sample-app/reference/`):
+  4-arg `MotadataProviderConfiguration(clientToken, env, TrackingConsent.GRANTED, {options})` with
+  `customEndpoint` inside `rumConfiguration` and `_dd.needsClearTextHttp:true` for HTTP endpoints.
+- Verified against core: constructor sig (CoreConfiguration), RumConfiguration fields, `_dd.needsClearTextHttp`
+  (MdSdkImplementation.kt:414), and that `nativeCrashReportEnabled`→`setCrashReportsEnabled` (core JVM crash,
+  NOT NDK — safe, no NDK artifact needed). Fixed cited API `setUser`→`setUserInfo`.
+- SOP verify section: `mdsource=react-native&md-api-key=`, MD-* headers, `_md` body, 200/202/401, dashboard.
+
 ## Remaining
-- Phase 5: rebranded snippet + `MOTADATA_REACTNATIVE_CLIENT_SOP.md` (mirror Android SOP).
 - Phase 6: publish `@motadata365/mobile-react-navigation@1.0.0` (dry-run→real) + end-to-end verify.
 - Deferred/optional: live wire capture; cosmetic lowercase `dd`/`__ddExtractText` rename; iOS.
 
