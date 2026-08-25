@@ -33,8 +33,12 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             npm publish --access public --dry-run
+          elif npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "⏭  $PKG@$VER already published — skipping."
           else
             npm publish --access public
           fi
@@ -43,8 +47,12 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          PKG=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             npm publish --access public --dry-run
+          elif npm view "$PKG@$VER" version >/dev/null 2>&1; then
+            echo "⏭  $PKG@$VER already published — skipping."
           else
             npm publish --access public
           fi
