@@ -54,10 +54,33 @@
 - **LIVE on npmjs: `@motadata365/mobile-react-native@1.0.0`** (tag `latest`, public). Verified via `npm view`
   (tarball at registry.npmjs.org, unpackedSize 1,778,204).
 
-## ALL PHASES COMPLETE — "Done" criteria met
+## Core "Done" criteria met (2026-08-25)
 - (a) zero non-legal datadog on shipped surfaces (gate green), (b) RN Android resolves com.motadata deps +
   backend-compatible wire (inherited from frozen native 1.0.1), (c) build+tests green on CI, (d) npm published from CI.
-- Optional follow-ups NOT done (deferred): live wire capture; cosmetic lowercase `dd`/`__ddExtractText` rename; iOS.
+
+## Second-round scope (2026-08-25): match DataDog's RN onboarding flow, nothing extra
+DataDog's official RN setup (Application Management screenshots) uses exactly TWO packages: core + react-navigation
+(auto View tracking). Core shipped. Adding ONLY the navigation package. NOT porting apollo/babel/codepush/
+session-replay/webview/openfeature. Snippet rebranded for Motadata w/ on-prem `customEndpoint`; RUM-only (no
+`nativeCrashReportEnabled`/`logsConfiguration`). Deliverable also: detailed client SOP mirroring Android SOP.
+
+## Phase 4 — Port @motadata365/mobile-react-navigation  (DONE, 2026-08-25, CI green @ 007e40f7)
+- Restored `packages/react-navigation` from upstream tag 3.5.3; full rebrand: `@datadog/mobile-react-navigation`
+  →`@motadata365/mobile-react-navigation`, `DdRumReactNavigationTracking`→`MdRumReactNavigationTracking`, core
+  import→`@motadata365/mobile-react-native`, `com.datadog.reactnative`→`com.motadata.reactnative`; rewrote the
+  `github.com/DataDog/dd-sdk-reactnative` comment URL (would trip gate); rewrote package.json/README; deleted
+  DataDog `release-content.txt`; version 1.0.0. JS-only — NO native/Gradle.
+- Wired into yarn workspaces + jest.projects + lerna.json + tsconfig paths; extended no-datadog gate
+  (`packages/react-navigation/src` + package.json) and publish workflow (2nd publish step).
+- Tarball hygiene: files-array negation (same pattern as core).
+- CI fixes: wrapped multi-specifier import for prettier; added `fix-react-navigation-import-in-dependencies.sh`
+  step to test workflow (stack-v5/v6 alias `@react-navigation/native`→native-v5/v6).
+- **CI GREEN**: Build ✅ Test ✅ (675 tests, +76 nav, suite PASS) No-Datadog ✅ CodeQL ✅. NOT yet published.
+
+## Remaining
+- Phase 5: rebranded snippet + `MOTADATA_REACTNATIVE_CLIENT_SOP.md` (mirror Android SOP).
+- Phase 6: publish `@motadata365/mobile-react-navigation@1.0.0` (dry-run→real) + end-to-end verify.
+- Deferred/optional: live wire capture; cosmetic lowercase `dd`/`__ddExtractText` rename; iOS.
 
 ---
 _Check-in required between every phase (STOP for go-ahead)._
