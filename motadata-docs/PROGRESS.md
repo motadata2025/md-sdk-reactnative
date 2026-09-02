@@ -107,11 +107,24 @@ session-replay/webview/openfeature. Snippet rebranded for Motadata w/ on-prem `c
 - Republished: **`@motadata365/mobile-react-native@1.0.1`** now `latest` (verified: published README has 0
   datadog refs, first line "# Motadata React Native Monitoring"). Nav stays 1.0.0 (skipped by idempotent guard).
 
+## Phase 8 — Live capture + critical packaging/compat fixes  (2026-09-02)
+- **Live wire capture DONE** against a real RN 0.87 / React 19 / New-Arch app (EventLab, refactored to
+  react-navigation v6) → local HTTP capture backend. All 5 RN event types captured (view/action/resource/
+  error/long_task), vitals ride on view events, BOTH packages proven, wire 100% Motadata (mdsource=react-native,
+  MD-* headers, `_md` body; 0 `datadog`/`_dd`). SOP validated against reality.
+- **Found + fixed 2 real SDK bugs** (published 1.0.1 could NOT compile on Android):
+  - BUG A (critical): `files` array `android/src/main/**` EXCLUDED `android/src/newarch/**`+`oldarch/**`
+    (TurboModule wrappers MdSdk/MdRum/MdTrace). Fixed → `android/src/**` + `!android/src/test/**`.
+  - BUG B (RN 0.87): `newarch/MdSdk.kt:195` bare `currentActivity` property broke → `reactContext.currentActivity`.
+  - Bumped core → **1.0.2**; SOP core version updated 1.0.1→1.0.2 (native artifacts stay 1.0.1).
+- Next: CI green → dry-run publish (verify tarball ships arch sources, excludes test) → USER dispatches real
+  publish → then revert EventLab to clean + re-instrument from published 1.0.2 + recapture.
+
 ## Shipped state (npm `latest`)
 - `@motadata365/mobile-react-native@1.0.1` (core RUM) + `@motadata365/mobile-react-navigation@1.0.0`
-  (auto View tracking) — DataDog RN onboarding-flow parity. Client SOP:
-  `motadata-docs/MOTADATA_REACTNATIVE_CLIENT_SOP.md`.
-- Deferred/optional: live wire capture; cosmetic lowercase `dd`/`__ddExtractText`/`ddRum` rename; iOS.
+  (auto View tracking). ⚠️ 1.0.1 core is BROKEN for Android builds (missing arch sources) — **1.0.2 fix in
+  flight** (see Phase 8). Client SOP: `motadata-docs/MOTADATA_REACTNATIVE_CLIENT_SOP.md`.
+- Deferred/optional: cosmetic lowercase `dd`/`__ddExtractText`/`ddRum` rename; iOS; crash-event capture.
 
 ---
 _Check-in required between every phase (STOP for go-ahead)._

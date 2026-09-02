@@ -1,6 +1,6 @@
 {
     "name": "@motadata365/mobile-react-native",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "A client-side React Native module to interact with Motadata",
     "keywords": [
         "motadata",
@@ -31,7 +31,8 @@
         "android/build.gradle",
         "android/detekt.yml",
         "android/gradle.properties",
-        "android/src/main/**",
+        "android/src/**",
+        "!android/src/test/**",
         "jest",
         "motadata-sourcemaps.gradle",
         "motadata-configuration.gradle",

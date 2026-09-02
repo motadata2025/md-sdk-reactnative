@@ -5,7 +5,7 @@ to a Motadata custom endpoint (HTTP or HTTPS). Three steps: **S‑1 Install → 
 provider) → S‑3 Auto view tracking (react-navigation)**.
 
 > This is the **canonical client SOP**. Packages (distributed via **npm**; install pulls the latest):
-> - `@motadata365/mobile-react-native` — the core RUM SDK (current **`1.0.1`**)
+> - `@motadata365/mobile-react-native` — the core RUM SDK (current **`1.0.2`**)
 > - `@motadata365/mobile-react-navigation` — automatic View tracking for `react-navigation` (current **`1.0.0`**)
 
 > **What the SDK includes** (all **automatic — no extra app code**):
@@ -21,7 +21,7 @@ nothing by hand.
 
 | Component | Supported | Notes |
 |---|---|---|
-| `@motadata365/mobile-react-native` (core RUM) | **1.0.1** | npm; install pulls the latest |
+| `@motadata365/mobile-react-native` (core RUM) | **1.0.2** | npm; install pulls the latest |
 | `@motadata365/mobile-react-navigation` (auto View tracking) | **1.0.0** | npm; needed **only** for automatic `react-navigation` views |
 | **React Native** | **`>=0.63.4 <1.0`** | SDK peer dependency |
 | **React** | **`>=16.13.1`** | SDK peer dependency |
