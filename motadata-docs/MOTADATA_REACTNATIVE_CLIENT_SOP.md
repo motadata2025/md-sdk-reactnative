@@ -12,7 +12,7 @@ provider) → S‑3 Auto view tracking (react-navigation)**.
 > - **`md-api-key` query param** on every request (the param your Motadata intake authenticates on)
 > - **`mdsource=react-native`** query param (identifies the SDK platform)
 > - **`session.created`** (epoch‑ms) and **`_md.document_version`** on view state
-> - **view, action, resource, error, long_task, and crash** events, each carrying the Motadata `_md` envelope
+> - **view, action, resource, error, long_task, and vital (app-launch)** events, each carrying the Motadata `_md` envelope
 
 ## Supported versions
 Everything the SDK needs, and the exact versions it supports. `npm install` (S‑1) pulls the latest
@@ -214,18 +214,19 @@ Following this SOP exactly, these RUM event types flow — no extra app code bey
 | **view** | screen / route changes | S‑3 auto tracking (`MdRumReactNavigationTracking.startTrackingViews`) for `react-navigation` apps; `MdRum.startView`/`stopView` otherwise (see S‑3 matrix) |
 | **action** | taps, long-presses | `trackInteractions: true` |
 | **resource** | `fetch` / XHR network calls | `trackResources: true` |
-| **error** | JS errors + native (Android/JVM) crashes | `trackErrors: true` + `nativeCrashReportEnabled: true` |
-| **long_task** | JS stalls > 100ms, native stalls > 200ms | `longTaskThresholdMs: 100`, `nativeLongTaskThresholdMs: 200` |
+| **error** | JS errors (incl. `console.error`) + native (Android/JVM) crashes | `trackErrors: true` + `nativeCrashReportEnabled: true` |
+| **long_task** | JS stalls > 100ms, native stalls > 200ms (a >~5 s stall is flagged `is_frozen_frame: true`) | `longTaskThresholdMs: 100`, `nativeLongTaskThresholdMs: 200` |
+| **vital** | app-launch timing — a standalone `type: "vital"` event at startup | automatic (native app-launch metric) |
 
-> **⚠️ There is NO standalone `type: "vital"` event on React Native.** Performance vitals (CPU, memory,
-> refresh rate, JS refresh rate) **do** flow — but as **fields on `view` events**
-> (`view.cpu_ticks_per_second`, `view.memory_average`, `view.refresh_rate_average`, `view.js_refresh_rate.*`),
-> not as separate events. They are on by default (`vitalsUpdateFrequency: 'AVERAGE'`).
->
-> The native Android SDK additionally emits an `app_launch` (TTID) event of `type: "vital"`, but the React
-> Native layer does **not** bridge it to JS — so **RN produces zero `type: "vital"` events** (this matches
-> real field captures for the equivalent DataDog SDK versions this fork is based on). On React Native,
-> app-launch timing is only visible as the synthetic **`ApplicationLaunch`** view's `view.time_spent`.
+> **Vitals — two distinct things.**
+> 1. **Performance vitals** (CPU, memory, refresh rate, JS refresh rate) flow as **fields on `view` events**
+>    (`view.cpu_ticks_per_second`, `view.memory_average`, `view.refresh_rate_average`, `view.js_refresh_rate.*`),
+>    not as separate events. On by default (`vitalsUpdateFrequency: 'AVERAGE'`).
+> 2. **App-launch vital** — a **standalone `type: "vital"` event IS emitted at startup** on React Native
+>    (`vital.type: "app_launch"`, `vital.name: "time_to_initial_display"`, `app_launch_metric: "ttid"`,
+>    with `startup_type` cold/warm/hot and a `duration` in nanoseconds). This is verified from live captures of
+>    this SDK — one app-launch vital per launch, carrying the standard `_md` envelope. (Because it fires once at
+>    launch and rides a later upload batch, it is easy to miss in a short capture, but it does flow.)
 
 ---
 
