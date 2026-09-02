@@ -14,20 +14,34 @@ provider) → S‑3 Auto view tracking (react-navigation)**.
 > - **`session.created`** (epoch‑ms) and **`_md.document_version`** on view state
 > - **view, action, resource, error, long_task, and crash** events, each carrying the Motadata `_md` envelope
 
+## Supported versions
+Everything the SDK needs, and the exact versions it supports. `npm install` (S‑1) pulls the latest
+published packages; the native Android artifacts are resolved **transitively** from Maven Central — you add
+nothing by hand.
+
+| Component | Supported | Notes |
+|---|---|---|
+| `@motadata365/mobile-react-native` (core RUM) | **1.0.1** | npm; install pulls the latest |
+| `@motadata365/mobile-react-navigation` (auto View tracking) | **1.0.0** | npm; needed **only** for automatic `react-navigation` views |
+| **React Native** | **`>=0.63.4 <1.0`** | SDK peer dependency |
+| **React** | **`>=16.13.1`** | SDK peer dependency |
+| **Android `minSdkVersion`** | **≥ 24** | React Native's default; the native SDK itself needs ≥ 23 |
+| **Platform** | **Android only** (this round) | iOS is not shipped — do **not** run `pod install` |
+| **`react-navigation`** | **v5 or v6** — *v7 is not supported* | Only required for **automatic** View tracking (S‑3). v7 removed the `removeListener` API the tracker relies on. Apps not on `react-navigation` use manual `MdRum.startView`/`stopView` instead (see S‑3). |
+| `@react-navigation/native` + a navigator (`native-stack` / `stack`) | matching your `react-navigation` v5 or v6 | Client-provided; auto view tracking (S‑3) attaches to your `NavigationContainer` |
+| `react-native-screens`, `react-native-safe-area-context` | as required by your `react-navigation` version | Client-provided peers of `react-navigation` |
+| **Android native artifacts** (Maven Central, transitive) | **1.0.1** | `com.motadata:motadata-rum-android` + `-trace` *(+ transitive `-core`, `-internal`, `-okhttp`, `-trace-api`, `-trace-internal`)* — nothing to add by hand |
+
 ## Prerequisites
-- A React Native app targeting **Android**. Required versions (SDK peer dependencies):
-  - **React Native** `>=0.63.4 <1.0`
-  - **React** `>=16.13.1`
-  - Android **`minSdkVersion` ≥ 24** (React Native's default; the native SDK itself needs ≥ 23).
-- [`react-navigation`](https://reactnavigation.org/) already installed and set up in your app — **v5 or v6**
-  (`@react-navigation/native` + a navigator such as `@react-navigation/stack`, and their peers like
-  `react-native-screens` / `react-native-safe-area-context`). Auto view tracking (S‑3) attaches to it.
+- A React Native app **targeting Android** that meets the **[Supported versions](#supported-versions)** above.
+- **View tracking depends on your navigation setup:** if your app uses **`react-navigation` (v5/v6)** — the
+  standard for modern RN apps — install the nav package for **automatic** per‑screen views (S‑3). **If it does
+  not**, skip the nav package and track views manually with `MdRum.startView`/`stopView` (see *“View tracking by
+  navigation type”* in S‑3). Everything else — actions, resources, errors, long tasks, crashes — works the same
+  either way.
 - From the client's Motadata org: **RUM application id** and **client token**.
-- **No credentials needed to fetch the SDK** — the JS packages are on **public npm** (no auth token),
-  and the Android native SDK is on **Maven Central** (a default Gradle repository — no GitHub PAT).
-- Android native artifacts (pulled **transitively** by Gradle, current version **`1.0.1`** — nothing to add by hand):
-  - `com.motadata:motadata-rum-android:1.0.1`
-  - `com.motadata:motadata-rum-android-trace:1.0.1` *(+ transitive `-core`, `-internal`, `-okhttp`, `-trace-api`, `-trace-internal`)*
+- **No credentials needed to fetch the SDK** — the JS packages are on **public npm** (no auth token), and the
+  Android native SDK is on **Maven Central** (a default Gradle repository — no GitHub PAT).
 
 ---
 
@@ -163,6 +177,33 @@ a RUM **view** event — no per-screen code.
 > **Optional predicates** — `startTrackingViews` accepts a second `NavigationTrackingOptions` argument to
 > rename views, skip views, or filter navigation params. See the package README.
 
+### View tracking by navigation type — which path applies to *your* app
+`@motadata365/mobile-react-navigation` provides **automatic** View events **only** for apps that use
+[`react-navigation`](https://reactnavigation.org/) (v5/v6). This is the same integration model the SDK is
+based on — auto view tracking ships for `react-navigation`; every other navigation setup uses **manual**
+view calls. Pick the row that matches your app:
+
+| Your app's navigation | View events | What to do |
+|---|---|---|
+| **`react-navigation`** (v5/v6) — most modern RN apps, incl. Expo Router (built on it) | **Automatic**, per screen | Install `@motadata365/mobile-react-navigation` and call `startTrackingViews` (this S‑3). No per‑screen code. |
+| **`react-native-navigation`** (Wix) | Manual | Skip the nav package; call `MdRum.startView` / `stopView` from your navigation lifecycle. |
+| **Custom / none** (e.g. state‑driven screen switching) | `ApplicationLaunch` view is always emitted automatically; everything else is manual | Skip the nav package; call `MdRum.startView` / `stopView` when each logical screen appears / disappears. |
+
+> **Even with no navigation library, you are never at zero views** — the native SDK always emits the
+> synthetic **`ApplicationLaunch`** view at startup, so actions/resources/errors that occur before your first
+> real view still attach to a view. Automatic *per‑screen* views are what `react-navigation` adds.
+
+**Manual view tracking (non‑`react-navigation` apps).** Mark each screen as it becomes visible and hide it
+when it leaves — the `key` must be stable and match between `startView`/`stopView`:
+```ts
+import { MdRum } from '@motadata365/mobile-react-native';
+
+// when a screen appears:
+MdRum.startView('home-screen-key', 'Home');   // (key, viewName)
+// when it disappears (navigating away):
+MdRum.stopView('home-screen-key');
+```
+
 ---
 
 ## Events produced (with the config above)
@@ -170,7 +211,7 @@ Following this SOP exactly, these RUM event types flow — no extra app code bey
 
 | `type` | Produced by | Enabled by |
 |---|---|---|
-| **view** | screen / route changes | S‑3 auto tracking (`MdRumReactNavigationTracking.startTrackingViews`) |
+| **view** | screen / route changes | S‑3 auto tracking (`MdRumReactNavigationTracking.startTrackingViews`) for `react-navigation` apps; `MdRum.startView`/`stopView` otherwise (see S‑3 matrix) |
 | **action** | taps, long-presses | `trackInteractions: true` |
 | **resource** | `fetch` / XHR network calls | `trackResources: true` |
 | **error** | JS errors + native (Android/JVM) crashes | `trackErrors: true` + `nativeCrashReportEnabled: true` |
